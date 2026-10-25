@@ -44,9 +44,7 @@
       border: 1px solid #cbd5e1;
       transition: background 0.2s;
     }
-    .btn-nav:hover {
-      background: #e2e8f0;
-    }
+    .btn-nav:hover { background: #e2e8f0; }
     h2 { color: #80146e; margin-top: 0; margin-bottom: 4px; }
     p.sub { color: #666; margin-top: 0; margin-bottom: 20px; font-size: 14px; }
     
@@ -71,7 +69,7 @@
       font-size: 13px;
       margin-bottom: 4px;
     }
-    input[type="text"], select {
+    input[type="text"], input[type="password"], select {
       width: 100%;
       padding: 8px 10px;
       border: 1px solid #ccc;
@@ -166,3 +164,119 @@
         padding-top: 5px;
       }
     }
+  </style>
+</head>
+<body>
+
+<div class="box no-print">
+  <!-- Barra de navegacio a l'altra App -->
+  <div class="nav-bar">
+    <a href="index.html" class="btn-nav">
+      <span>←</span> Generador d'Informes Tècnics
+    </a>
+    <span style="font-size: 12px; color: #64748b; font-weight: bold;">Marratxí Apps</span>
+  </div>
+
+  <h2>📋 Extractor de Tasques a Excel, PDF i Tasks</h2>
+  <p class="sub">Àrea d'Educació — Ajuntament de Marratxí</p>
+
+  <div class="card-settings">
+    <!-- Configuracio de la Clau API (Guardada al navegador) -->
+    <div class="camp">
+      <label for="apiKeyInput">Clau d'API de Gemini (Google AI):</label>
+      <div style="display: flex; gap: 8px;">
+        <input type="password" id="apiKeyInput" placeholder="Introdueix la teva API Key d'IA..." onchange="desarApiKey()">
+        <button class="btn-sm" type="button" onclick="alternarVisibilitatKey()">👁️</button>
+      </div>
+      <span id="keyAvis" style="font-size: 11px; color: #666;">Es guarda automàticament al teu dispositiu de forma privada.</span>
+    </div>
+
+    <div class="camp">
+      <label for="logoInput">Logotip oficial (logo.png):</label>
+      <input type="file" id="logoInput" accept="image/png, image/jpeg">
+      <span id="logoAvis" style="font-size: 12px; color: #666;">Selecciona l'escut un cop i el navegador el recordarà.</span>
+    </div>
+
+    <div class="camp">
+      <label for="arxiu">Document a processar (PDF o Imatge):</label>
+      <input type="file" id="arxiu" accept=".pdf, .png, .jpg, .jpeg">
+    </div>
+
+    <div style="margin-top: 15px;">
+      <button id="boto" class="btn" onclick="iniciarProcessament()">🔄 Processar Document</button>
+    </div>
+  </div>
+
+  <div id="log"></div>
+
+  <!-- Resultats i Exportacio -->
+  <div id="blocResultats" style="display:none; margin-top: 22px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+      <h3 id="titolTasques" style="margin: 0; font-size: 15px;">Tasques detectades</h3>
+      <div style="display: flex; gap: 6px;">
+        <button class="btn-sm" onclick="marcarTots(true)">Marcar tots</button>
+        <button class="btn-sm" onclick="marcarTots(false)">Desmarcar tots</button>
+      </div>
+    </div>
+
+    <div id="llistaTasques" style="max-height: 240px; overflow-y: auto; border: 1px solid #ddd; padding: 8px; border-radius: 4px; margin-bottom: 16px;"></div>
+
+    <!-- Integracio Google Tasks -->
+    <div class="card-settings" style="border-left: 4px solid #4285f4;">
+      <label style="color: #1a73e8; font-size: 14px;">📂 Sincronitzar amb Google Tasks</label>
+      
+      <div style="margin-bottom: 10px;">
+        <label><input type="radio" name="modeTasks" value="existent" checked onchange="canviarModeTasks()"> Afegir a una llista existent</label>
+        <label style="margin-left: 15px;"><input type="radio" name="modeTasks" value="nova" onchange="canviarModeTasks()"> Crear una llista nova</label>
+      </div>
+
+      <div id="blocLlistaExistent" class="camp">
+        <label for="selectTasksList">Selecciona la llista de Google Tasks:</label>
+        <div style="display: flex; gap: 8px;">
+          <select id="selectTasksList"><option value="">Carregant llistes...</option></select>
+          <button class="btn-sm" onclick="carregarLlistesTasks()">🔄 Refrescar</button>
+        </div>
+      </div>
+
+      <div id="blocLlistaNova" class="camp" style="display: none;">
+        <label for="nomNovaLlista">Nom de la nova llista:</label>
+        <input type="text" id="nomNovaLlista" placeholder="Ex: Incidències Cases Noves">
+      </div>
+
+      <button id="btnEnviarTasks" class="btn btn-tasks" onclick="enviarAGoogleTasks()">🚀 Enviar Tasques a Google Tasks</button>
+    </div>
+
+    <!-- Exportacio Documents -->
+    <div class="card-settings">
+      <label for="formatSelect">Format de sortida de document:</label>
+      <select id="formatSelect" onchange="canviarFormatUI()" style="margin-bottom: 12px;">
+        <option value="1">1. Oficial Marratxí (Capçalera, Àrea d'Educació i Signatura)</option>
+        <option value="2">2. Registre de Manteniment i Incidències</option>
+        <option value="3">3. Comanda / Inventari de Materials</option>
+        <option value="4">4. Llista de Control Simple (Checklist)</option>
+      </select>
+
+      <div class="grid-2">
+        <div>
+          <label for="orgInput">Organisme:</label>
+          <input type="text" id="orgInput" value="AJUNTAMENT DE MARRATXÍ">
+        </div>
+        <div>
+          <label for="areaInput">Àrea:</label>
+          <input type="text" id="areaInput" value="Àrea d'Educació">
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div>
+          <label for="titolDocInput">Títol del document:</label>
+          <input type="text" id="titolDocInput" value="Ordre de Treball / Manteniment">
+        </div>
+        <div>
+          <label for="operariInput">Operari / Tècnic responsable:</label>
+          <input type="text" id="operariInput" placeholder="Nom de l'operari...">
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
+        <button class="btn btn-green" onclick="descarregarExcelPersonalitzat()">⬇️ Descar

@@ -3,882 +3,347 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Generador de Informes Técnicos</title>
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- FontAwesome Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- Google Font: Inter -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Inter', 'sans-serif'],
-          },
-          colors: {
-            brand: {
-              50: '#f0f7ff',
-              100: '#e0effe',
-              500: '#0284c7',
-              600: '#0369a1',
-              700: '#075985',
-              800: '#0c4a6e',
-            }
-          }
-        }
-      }
-    }
-  </script>
-
+  <title>Generador de Informes Técnicos y de Incidentes</title>
   <style>
-    /* Estilos específicos para la impresión A4 / PDF */
+    :root {
+      --primary: #1e3a8a;
+      --primary-hover: #1d4ed8;
+      --accent: #2563eb;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --danger: #dc2626;
+      --success: #16a34a;
+      --warning: #ca8a04;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      padding-bottom: 60px;
+    }
+
+    header.topbar {
+      background-color: #ffffff;
+      border-bottom: 1px solid var(--border);
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-icon {
+      background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .brand-text h1 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .brand-text p {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+
+    .btn-primary { background-color: var(--primary); color: white; }
+    .btn-primary:hover { background-color: var(--primary-hover); }
+    .btn-secondary { background-color: #f1f5f9; color: #334155; border-color: #cbd5e1; }
+    .btn-secondary:hover { background-color: #e2e8f0; }
+    .btn-tasks { background-color: #80146e; color: white; }
+    .btn-tasks:hover { background-color: #6a0f5a; }
+    .btn-sm { padding: 4px 8px; font-size: 11px; }
+
+    .main-container {
+      max-width: 1300px;
+      margin: 20px auto;
+      padding: 0 16px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    @media (max-width: 900px) {
+      .main-container { grid-template-columns: 1fr; }
+    }
+
+    .form-pane, .preview-pane {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+    }
+
+    .section-title {
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 700;
+      color: var(--muted);
+      margin-bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+    }
+
+    .form-group { margin-bottom: 16px; }
+    label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: #334155; }
+    .req { color: var(--danger); }
+
+    input[type="text"], input[type="datetime-local"], select, textarea {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.2s;
+      background: #fff;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+    .upload-zone {
+      border: 2px dashed #cbd5e1;
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+      cursor: pointer;
+      background: #f8fafc;
+      transition: all 0.2s;
+    }
+
+    .upload-zone:hover { border-color: var(--accent); background: #eff6ff; }
+    .upload-zone.problem-zone { border-color: #fca5a5; background: #fff5f5; }
+    .upload-zone.solution-zone { border-color: #86efac; background: #f0fdf4; }
+
+    .thumbs-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .thumb-item {
+      position: relative;
+      height: 90px;
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: #000;
+    }
+
+    .thumb-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.9;
+    }
+
+    .thumb-item button {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      background: rgba(220, 38, 38, 0.85);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      font-size: 11px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ESTILO HOJA IMPRESIÓN / A4 */
+    .document-preview {
+      background: white;
+      border: 1px solid #cbd5e1;
+      padding: 28px;
+      border-radius: 6px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+
+    .doc-header {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 2px solid var(--primary);
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+    }
+
+    .doc-brand h2 { font-size: 16px; color: var(--primary); font-weight: 800; }
+    .doc-brand p { font-size: 11px; color: var(--muted); }
+    .doc-meta { text-align: right; font-size: 11px; color: var(--muted); }
+    .doc-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      background: #dcfce7;
+      color: #15803d;
+    }
+
+    .doc-info-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 16px;
+      font-size: 12px;
+    }
+
+    .doc-info-table td {
+      padding: 6px 8px;
+      border: 1px solid #e2e8f0;
+      background: #f8fafc;
+    }
+
+    .doc-block { margin-bottom: 14px; }
+    .doc-block h3 {
+      font-size: 12px;
+      text-transform: uppercase;
+      color: #1e3a8a;
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 4px;
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+
+    .doc-block p {
+      font-size: 12px;
+      color: #334155;
+      white-space: pre-wrap;
+      background: #fafafa;
+      padding: 8px;
+      border-radius: 4px;
+      border-left: 3px solid var(--primary);
+    }
+
+    .doc-gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .doc-gallery img {
+      width: 100%;
+      height: 110px;
+      object-fit: cover;
+      border-radius: 4px;
+      border: 1px solid #cbd5e1;
+    }
+
+    .signatures {
+      margin-top: 35px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      page-break-inside: avoid;
+    }
+
+    .sign-box {
+      border-top: 1px solid #94a3b8;
+      text-align: center;
+      padding-top: 6px;
+      font-size: 11px;
+      color: #475569;
+    }
+
     @media print {
-      @page {
-        size: A4 portrait;
-        margin: 12mm 15mm 15mm 15mm;
-      }
-
-      body {
-        background-color: #ffffff !important;
-        color: #1e293b !important;
-        font-size: 11pt !important;
-        line-height: 1.4 !important;
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
-      }
-
-      /* Ocultar elementos no imprimibles */
-      .no-print,
-      header,
-      #form-panel,
-      #action-bar,
-      #notification-toast,
-      footer {
-        display: none !important;
-      }
-
-      /* Mostrar únicamente la hoja de reporte */
-      #preview-panel {
-        display: block !important;
-        width: 100% !important;
-        max-width: 100% !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        box-shadow: none !important;
-        border: none !important;
-      }
-
-      .report-sheet {
-        box-shadow: none !important;
-        border: none !important;
-        padding: 0 !important;
-        margin: 0 !important;
-        max-width: 100% !important;
-        width: 100% !important;
-      }
-
-      .page-break {
-        page-break-inside: avoid;
-      }
-
-      .avoid-break {
-        break-inside: avoid;
-        page-break-inside: avoid;
-      }
-
-      /* Estilo de fotos en el PDF */
-      .print-grid-images {
-        display: grid !important;
-        grid-template-columns: repeat(2, 1fr) !important;
-        gap: 12px !important;
-      }
-    }
-
-    /* Scrollbar sutil para el panel de fotos */
-    ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #cbd5e1;
-      border-radius: 9999px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: #94a3b8;
+      body { background: white; padding: 0; }
+      header.topbar, .form-pane, .no-print { display: none !important; }
+      .main-container { display: block; max-width: 100%; margin: 0; padding: 0; }
+      .preview-pane { border: none; padding: 0; box-shadow: none; }
+      .document-preview { border: none; padding: 0; box-shadow: none; }
     }
   </style>
 </head>
-<body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex flex-col antialiased">
+<body>
 
-  <!-- Header Superior -->
-  <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm no-print">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-wrap justify-between items-center gap-3">
-      <div class="flex items-center space-x-3">
-        <div class="bg-brand-600 text-white p-2.5 rounded-xl shadow-md flex items-center justify-center">
-          <i class="fa-solid fa-file-shield text-xl"></i>
-        </div>
-        <div>
-          <h1 class="text-lg font-bold text-slate-900 leading-tight">ReporteDoc Pro</h1>
-          <p class="text-xs text-slate-500 font-medium">Generador e Impresor de Informes de Servicio y Fallas</p>
-        </div>
-      </div>
-
-      <!-- Barra de Acciones Rápidas -->
-      <div class="flex items-center gap-2">
-        <button type="button" onclick="resetForm()" class="px-3.5 py-2 text-sm font-medium text-slate-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors border border-slate-200">
-          <i class="fa-solid fa-arrow-rotate-left mr-1.5"></i>Limpiar
-        </button>
-        <button type="button" onclick="loadDemoData()" class="px-3.5 py-2 text-sm font-medium text-brand-600 bg-brand-50 hover:bg-brand-100 rounded-lg transition-colors">
-          <i class="fa-solid fa-wand-magic-sparkles mr-1.5"></i>Ejemplo
-        </button>
-        <button type="button" onclick="triggerPrint()" class="px-4 py-2 text-sm font-semibold text-white bg-brand-600 hover:bg-brand-700 active:scale-95 transition-all rounded-lg shadow-md hover:shadow-lg flex items-center gap-2">
-          <i class="fa-solid fa-print"></i>
-          <span>Imprimir / Guardar PDF</span>
-        </button>
-      </div>
-    </div>
-  </header>
-
-  <!-- Notificación Toast -->
-  <div id="notification-toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none no-print">
-    <div id="toast-content" class="bg-slate-900 text-white px-4 py-3 rounded-xl shadow-xl flex items-center space-x-3 text-sm">
-      <i id="toast-icon" class="fa-solid fa-circle-check text-emerald-400 text-lg"></i>
-      <span id="toast-msg">Mensaje del sistema</span>
+<header class="topbar no-print">
+  <div class="brand">
+    <div class="brand-icon">📋</div>
+    <div class="brand-text">
+      <h1>ReporteDoc Pro</h1>
+      <p>Generador e Impresor de Informes de Servicio y Fallas</p>
     </div>
   </div>
-
-  <!-- Contenedor Principal (2 Columnas: Formulario y Vista Previa) -->
-  <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-
-      <!-- ================= COLUMNA IZQUIERDA: FORMULARIO ================= -->
-      <section id="form-panel" class="lg:col-span-5 bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden no-print">
-        <div class="bg-slate-50 px-6 py-4 border-b border-slate-200 flex justify-between items-center">
-          <div class="flex items-center gap-2">
-            <i class="fa-solid fa-pen-to-square text-brand-600"></i>
-            <h2 class="font-bold text-slate-800">Formulario del Informe</h2>
-          </div>
-          <span class="text-xs bg-brand-100 text-brand-700 font-semibold px-2.5 py-1 rounded-full">Edición Directa</span>
-        </div>
-
-        <form id="reportForm" class="p-6 space-y-5" onsubmit="event.preventDefault();">
-          
-          <!-- Título y Código -->
-          <div>
-            <label for="input-title" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
-              Título del Informe <span class="text-red-500">*</span>
-            </label>
-            <input type="text" id="input-title" placeholder="Ej: Falla en Sistema Hidráulico - Bomba 02" 
-              class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition"
-              oninput="syncPreview()">
-          </div>
-
-          <!-- Metadatos: Estado, Técnico y Fecha -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label for="input-tech" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
-                Técnico / Responsable <span class="text-red-500">*</span>
-              </label>
-              <div class="relative">
-                <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
-                  <i class="fa-solid fa-user-gear text-sm"></i>
-                </span>
-                <input type="text" id="input-tech" placeholder="Nombre completo" 
-                  class="w-full pl-9 pr-3 py-2 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none"
-                  oninput="syncPreview()">
-              </div>
-            </div>
-
-            <div>
-              <label for="input-status" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
-                Estado Actual
-              </label>
-              <select id="input-status" onchange="syncPreview()" 
-                class="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none bg-white">
-                <option value="Resuelto">✅ Resuelto</option>
-                <option value="En Progreso">⏳ En Progreso</option>
-                <option value="Pendiente">⚠️ Pendiente</option>
-                <option value="Crítico">🚨 Crítico / Requiere Revisión</option>
-              </select>
-            </div>
-          </div>
-
-          <!-- Fecha y Hora -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label for="input-datetime" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
-                Fecha y Hora
-              </label>
-              <input type="datetime-local" id="input-datetime" 
-                class="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none"
-                onchange="syncPreview()">
-            </div>
-            <div>
-              <label for="input-code" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
-                Código / Nro. Referencia
-              </label>
-              <input type="text" id="input-code" placeholder="INF-2026-001" 
-                class="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none"
-                oninput="syncPreview()">
-            </div>
-          </div>
-
-          <!-- Ubicación con Geoposicionamiento -->
-          <div>
-            <div class="flex justify-between items-center mb-1">
-              <label for="input-location" class="block text-xs font-bold uppercase tracking-wider text-slate-600">
-                Ubicación del Suceso
-              </label>
-              <button type="button" onclick="getCurrentLocation()" id="btn-geoloc" 
-                class="text-xs text-brand-600 hover:text-brand-700 font-semibold flex items-center gap-1 hover:underline">
-                <i class="fa-solid fa-location-crosshairs"></i> Ubicación Actual
-              </button>
-            </div>
-            <div class="relative">
-              <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
-                <i class="fa-solid fa-map-pin text-sm"></i>
-              </span>
-              <input type="text" id="input-location" placeholder="Dirección, sede, sala o coordenadas" 
-                class="w-full pl-9 pr-3 py-2.5 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none"
-                oninput="syncPreview()">
-            </div>
-          </div>
-
-          <!-- Descripción del Problema -->
-          <div>
-            <label for="input-problem" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
-              Descripción del Problema / Falla <span class="text-red-500">*</span>
-            </label>
-            <textarea id="input-problem" rows="3" placeholder="Detalle los síntomas, causa aparente, alcance o anomalía detectada..." 
-              class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none resize-y"
-              oninput="syncPreview()"></textarea>
-          </div>
-
-          <!-- Fotos del Problema (Antes) -->
-          <div class="p-3.5 bg-rose-50/50 rounded-2xl border border-rose-100">
-            <div class="flex justify-between items-center mb-1.5">
-              <label class="block text-xs font-bold uppercase tracking-wider text-rose-800 flex items-center gap-1.5">
-                <i class="fa-solid fa-camera-retro text-rose-600"></i> Fotos del Problema (Antes)
-              </label>
-              <span id="problem-img-count" class="text-xs text-rose-600 font-medium">0 fotos</span>
-            </div>
-
-            <!-- Drag & Drop Problema -->
-            <div id="drop-zone-problem" 
-              class="border-2 border-dashed border-rose-200 hover:border-rose-400 rounded-xl p-4 text-center cursor-pointer transition-colors bg-white hover:bg-rose-50/30"
-              onclick="document.getElementById('file-input-problem').click()">
-              <input type="file" id="file-input-problem" multiple accept="image/*" class="hidden" onchange="handleFileSelect(event, 'problem')">
-              <div class="flex flex-col items-center justify-center">
-                <i class="fa-solid fa-cloud-arrow-up text-2xl text-rose-500 mb-1.5"></i>
-                <p class="text-xs font-medium text-slate-700">Subir evidencias del problema / falla</p>
-                <p class="text-[11px] text-slate-400">Arrastra fotos o haz clic (PNG, JPG, WEBP)</p>
-              </div>
-            </div>
-
-            <!-- Miniaturas Problema -->
-            <div id="thumbnails-problem" class="grid grid-cols-3 sm:grid-cols-4 gap-2 mt-2.5"></div>
-          </div>
-
-          <!-- Descripción de la Solución -->
-          <div>
-            <label for="input-solution" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
-              Acción Tomada / Solución Propuesta <span class="text-red-500">*</span>
-            </label>
-            <textarea id="input-solution" rows="3" placeholder="Acciones correctivas realizadas, piezas sustituidas o recomendaciones técnicas..." 
-              class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none resize-y"
-              oninput="syncPreview()"></textarea>
-          </div>
-
-          <!-- Fotos de la Solución (Después) -->
-          <div class="p-3.5 bg-emerald-50/50 rounded-2xl border border-emerald-100">
-            <div class="flex justify-between items-center mb-1.5">
-              <label class="block text-xs font-bold uppercase tracking-wider text-emerald-800 flex items-center gap-1.5">
-                <i class="fa-solid fa-circle-check text-emerald-600"></i> Fotos de la Solución (Después)
-              </label>
-              <span id="solution-img-count" class="text-xs text-emerald-600 font-medium">0 fotos</span>
-            </div>
-
-            <!-- Drag & Drop Solución -->
-            <div id="drop-zone-solution" 
-              class="border-2 border-dashed border-emerald-200 hover:border-emerald-400 rounded-xl p-4 text-center cursor-pointer transition-colors bg-white hover:bg-emerald-50/30"
-              onclick="document.getElementById('file-input-solution').click()">
-              <input type="file" id="file-input-solution" multiple accept="image/*" class="hidden" onchange="handleFileSelect(event, 'solution')">
-              <div class="flex flex-col items-center justify-center">
-                <i class="fa-solid fa-cloud-arrow-up text-2xl text-emerald-500 mb-1.5"></i>
-                <p class="text-xs font-medium text-slate-700">Subir evidencias del trabajo terminado</p>
-                <p class="text-[11px] text-slate-400">Arrastra fotos o haz clic (PNG, JPG, WEBP)</p>
-              </div>
-            </div>
-
-            <!-- Miniaturas Solución -->
-            <div id="thumbnails-solution" class="grid grid-cols-3 sm:grid-cols-4 gap-2 mt-2.5"></div>
-          </div>
-
-          <!-- Observaciones / Notas finales -->
-          <div>
-            <label for="input-notes" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
-              Notas Adicionales / Próximos Pasos (Opcional)
-            </label>
-            <input type="text" id="input-notes" placeholder="Ej: Se requiere revisión de seguimiento en 15 días" 
-              class="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none"
-              oninput="syncPreview()">
-          </div>
-
-        </form>
-      </section>
-
-      <!-- ================= COLUMNA DERECHA: VISTA PREVIA (HOJA A4) ================= -->
-      <section id="preview-panel" class="lg:col-span-7 flex flex-col items-center">
-        
-        <!-- Contenedor Hoja A4 para Pantalla e Impresión -->
-        <article class="report-sheet bg-white border border-slate-200 shadow-xl rounded-2xl p-6 sm:p-10 w-full max-w-[800px] min-h-[900px] flex flex-col justify-between">
-          
-          <div>
-            <!-- Encabezado del Documento -->
-            <header class="border-b-2 border-slate-800 pb-5 mb-6">
-              <div class="flex flex-wrap justify-between items-start gap-4">
-                <div class="flex items-center gap-3.5">
-                  <div class="h-12 w-12 rounded-xl bg-slate-900 text-white flex items-center justify-center text-xl font-bold">
-                    <i class="fa-solid fa-clipboard-check"></i>
-                  </div>
-                  <div>
-                    <h2 class="text-xl font-extrabold text-slate-900 uppercase tracking-tight">Informe de Incidencia Técnica</h2>
-                    <p class="text-xs text-slate-500 font-medium">DOCUMENTO OFICIAL DE INSPECCIÓN Y SERVICIO</p>
-                  </div>
-                </div>
-
-                <!-- Folio / Estado -->
-                <div class="text-right">
-                  <span id="preview-status-badge" class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
-                    Resuelto
-                  </span>
-                  <p class="text-xs text-slate-400 mt-1.5 font-mono" id="preview-ref">REF: INF-001</p>
-                </div>
-              </div>
-            </header>
-
-            <!-- Título Principal del Reporte -->
-            <div class="mb-6">
-              <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Asunto del Informe</span>
-              <h3 id="preview-title" class="text-xl sm:text-2xl font-bold text-slate-900 leading-snug mt-0.5">
-                Título del Informe Técnico
-              </h3>
-            </div>
-
-            <!-- Fila de Metadatos Clave (3 Tarjetas) -->
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5 p-3.5 bg-slate-50 rounded-xl border border-slate-200 mb-6 text-xs">
-              <div>
-                <p class="text-slate-400 font-semibold uppercase tracking-wider text-[10px]">Fecha y Hora</p>
-                <p id="preview-datetime" class="font-medium text-slate-800 mt-0.5">-</p>
-              </div>
-              <div>
-                <p class="text-slate-400 font-semibold uppercase tracking-wider text-[10px]">Responsable Técnico</p>
-                <p id="preview-tech" class="font-medium text-slate-800 mt-0.5">-</p>
-              </div>
-              <div>
-                <p class="text-slate-400 font-semibold uppercase tracking-wider text-[10px]">Ubicación</p>
-                <p id="preview-location" class="font-medium text-slate-800 mt-0.5 truncate">-</p>
-              </div>
-            </div>
-
-            <!-- Sección: Diagnóstico / Problema -->
-            <div class="mb-6 avoid-break">
-              <div class="flex items-center gap-2 mb-2 pb-1 border-b border-slate-200">
-                <i class="fa-solid fa-triangle-exclamation text-amber-500 text-sm"></i>
-                <h4 class="font-bold text-slate-900 text-sm uppercase tracking-wide">1. Diagnóstico y Problema Reportado</h4>
-              </div>
-              <p id="preview-problem" class="text-sm text-slate-700 whitespace-pre-line leading-relaxed bg-slate-50/50 p-3 rounded-lg border border-slate-100 min-h-[50px]">
-                Sin descripción de problema especificada.
-              </p>
-
-              <!-- Galería Fotos del Problema -->
-              <div class="mt-3">
-                <div class="flex items-center justify-between text-xs font-semibold text-slate-600 mb-1.5">
-                  <span class="flex items-center gap-1.5 text-rose-700">
-                    <i class="fa-regular fa-image"></i> Evidencia del Problema (Antes)
-                  </span>
-                  <span id="preview-problem-count" class="text-[11px] text-slate-400">0 fotos</span>
-                </div>
-                <div id="preview-gallery-problem" class="grid grid-cols-2 gap-3 print-grid-images">
-                  <div class="col-span-2 py-4 text-center text-xs text-slate-400 border border-dashed border-slate-200 rounded-xl bg-slate-50/70">
-                    Sin fotografías del problema registradas.
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Sección: Solución Aplicada -->
-            <div class="mb-6 avoid-break">
-              <div class="flex items-center gap-2 mb-2 pb-1 border-b border-slate-200">
-                <i class="fa-solid fa-wrench text-brand-600 text-sm"></i>
-                <h4 class="font-bold text-slate-900 text-sm uppercase tracking-wide">2. Acción Realizada / Solución</h4>
-              </div>
-              <p id="preview-solution" class="text-sm text-slate-700 whitespace-pre-line leading-relaxed bg-slate-50/50 p-3 rounded-lg border border-slate-100 min-h-[50px]">
-                Sin detalle de la solución o intervención realizada.
-              </p>
-
-              <!-- Galería Fotos de la Solución -->
-              <div class="mt-3">
-                <div class="flex items-center justify-between text-xs font-semibold text-slate-600 mb-1.5">
-                  <span class="flex items-center gap-1.5 text-emerald-700">
-                    <i class="fa-regular fa-image"></i> Evidencia de la Solución (Después)
-                  </span>
-                  <span id="preview-solution-count" class="text-[11px] text-slate-400">0 fotos</span>
-                </div>
-                <div id="preview-gallery-solution" class="grid grid-cols-2 gap-3 print-grid-images">
-                  <div class="col-span-2 py-4 text-center text-xs text-slate-400 border border-dashed border-slate-200 rounded-xl bg-slate-50/70">
-                    Sin fotografías de la solución registradas.
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Observaciones adicionales si existen -->
-            <div id="preview-notes-container" class="mb-6 avoid-break hidden">
-              <div class="flex items-center gap-2 mb-1.5 pb-1 border-b border-slate-200">
-                <i class="fa-solid fa-note-sticky text-slate-600 text-sm"></i>
-                <h4 class="font-bold text-slate-900 text-sm uppercase tracking-wide">4. Notas y Observaciones</h4>
-              </div>
-              <p id="preview-notes" class="text-xs text-slate-600 italic bg-amber-50/40 p-2.5 rounded-lg border border-amber-100"></p>
-            </div>
-          </div>
-
-          <!-- Pie de Página y Firmas para el PDF -->
-          <footer class="mt-8 pt-6 border-t border-slate-200 avoid-break">
-            <div class="grid grid-cols-2 gap-8 text-center pt-6">
-              <div>
-                <div class="border-b border-slate-400 w-3/4 mx-auto mb-2"></div>
-                <p id="sign-tech" class="text-xs font-bold text-slate-800">Firma del Técnico</p>
-                <p class="text-[10px] text-slate-400">Certificación del trabajo ejecutado</p>
-              </div>
-              <div>
-                <div class="border-b border-slate-400 w-3/4 mx-auto mb-2"></div>
-                <p class="text-xs font-bold text-slate-800">Firma / Conforme del Cliente</p>
-                <p class="text-[10px] text-slate-400">Aceptación y recepción del servicio</p>
-              </div>
-            </div>
-
-            <div class="flex justify-between items-center text-[10px] text-slate-400 mt-6 pt-3 border-t border-slate-100">
-              <span>Generado con ReporteDoc Pro</span>
-              <span id="print-timestamp">Impreso: -</span>
-            </div>
-          </footer>
-
-        </article>
-      </section>
-
-    </div>
-  </main>
-
-  <script>
-    // Dos bancos de imágenes independientes: problema y solución
-    let problemImages = [];
-    let solutionImages = [];
-
-    // Inicialización al cargar la página
-    window.addEventListener('DOMContentLoaded', () => {
-      // Configurar fecha y hora actual por defecto en el input
-      const now = new Date();
-      now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-      document.getElementById('input-datetime').value = now.toISOString().slice(0, 16);
-
-      // Generar un código de reporte inicial
-      const randomFolio = Math.floor(1000 + Math.random() * 9000);
-      document.getElementById('input-code').value = `INF-${new Date().getFullYear()}-${randomFolio}`;
-
-      setupDragAndDrop('drop-zone-problem', 'problem', 'border-rose-400', 'bg-rose-50');
-      setupDragAndDrop('drop-zone-solution', 'solution', 'border-emerald-400', 'bg-emerald-50');
-      syncPreview();
-    });
-
-    // Configuración genérica de Drag & Drop para ambas zonas
-    function setupDragAndDrop(elementId, category, borderClass, bgClass) {
-      const dropZone = document.getElementById(elementId);
-      if (!dropZone) return;
-
-      ['dragenter', 'dragover'].forEach(eventName => {
-        dropZone.addEventListener(eventName, (e) => {
-          e.preventDefault();
-          dropZone.classList.add(borderClass, bgClass);
-        }, false);
-      });
-
-      ['dragleave', 'drop'].forEach(eventName => {
-        dropZone.addEventListener(eventName, (e) => {
-          e.preventDefault();
-          dropZone.classList.remove(borderClass, bgClass);
-        }, false);
-      });
-
-      dropZone.addEventListener('drop', (e) => {
-        const dt = e.dataTransfer;
-        handleFiles(dt.files, category);
-      });
-    }
-
-    // Manejo de archivos desde el input selector según categoría
-    function handleFileSelect(e, category) {
-      handleFiles(e.target.files, category);
-      e.target.value = '';
-    }
-
-    // Procesar imágenes y convertirlas a Base64 con compresión en Canvas
-    function handleFiles(files, category) {
-      if (!files || files.length === 0) return;
-
-      Array.from(files).forEach(file => {
-        if (!file.type.startsWith('image/')) {
-          showToast('Solo se permiten archivos de imagen.', 'error');
-          return;
-        }
-
-        const reader = new FileReader();
-        reader.onload = function(event) {
-          const img = new Image();
-          img.onload = function() {
-            // Optimizar dimensiones para impresión sin perder nitidez
-            const maxDim = 1200;
-            let width = img.width;
-            let height = img.height;
-
-            if (width > maxDim || height > maxDim) {
-              if (width > height) {
-                height = Math.round((height * maxDim) / width);
-                width = maxDim;
-              } else {
-                width = Math.round((width * maxDim) / height);
-                height = maxDim;
-              }
-            }
-
-            const canvas = document.createElement('canvas');
-            canvas.width = width;
-            canvas.height = height;
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0, width, height);
-
-            const optimizedDataUrl = canvas.toDataURL('image/jpeg', 0.82);
-
-            const imageObject = {
-              id: 'img_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
-              data: optimizedDataUrl,
-              name: file.name
-            };
-
-            if (category === 'problem') {
-              problemImages.push(imageObject);
-            } else {
-              solutionImages.push(imageObject);
-            }
-
-            renderThumbnails(category);
-            syncPreview();
-          };
-          img.src = event.target.result;
-        };
-        reader.readAsDataURL(file);
-      });
-
-      showToast(`Fotos añadidas a ${category === 'problem' ? 'Problema (Antes)' : 'Solución (Después)'}.`);
-    }
-
-    // Eliminar una imagen de su respectiva categoría
-    function removeImage(id, category) {
-      if (category === 'problem') {
-        problemImages = problemImages.filter(img => img.id !== id);
-      } else {
-        solutionImages = solutionImages.filter(img => img.id !== id);
-      }
-      renderThumbnails(category);
-      syncPreview();
-      showToast('Imagen retirada.');
-    }
-
-    // Renderizar miniaturas en el formulario
-    function renderThumbnails(category) {
-      const isProb = category === 'problem';
-      const list = isProb ? problemImages : solutionImages;
-      const container = document.getElementById(isProb ? 'thumbnails-problem' : 'thumbnails-solution');
-      const countBadge = document.getElementById(isProb ? 'problem-img-count' : 'solution-img-count');
-
-      countBadge.textContent = `${list.length} foto${list.length === 1 ? '' : 's'}`;
-
-      if (list.length === 0) {
-        container.innerHTML = '';
-        return;
-      }
-
-      container.innerHTML = list.map((img, idx) => `
-        <div class="relative group rounded-xl overflow-hidden border border-slate-200 aspect-square bg-slate-100">
-          <img src="${img.data}" alt="Foto ${idx + 1}" class="w-full h-full object-cover">
-          <button type="button" onclick="removeImage('${img.id}', '${category}')" 
-            class="absolute top-1 right-1 bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] opacity-90 hover:opacity-100 hover:scale-110 transition shadow" 
-            title="Eliminar foto">
-            <i class="fa-solid fa-xmark"></i>
-          </button>
-        </div>
-      `).join('');
-    }
-
-    // Sincronizar en tiempo real el formulario con la hoja de previsualización
-    function syncPreview() {
-      const title = document.getElementById('input-title').value.trim();
-      const tech = document.getElementById('input-tech').value.trim();
-      const code = document.getElementById('input-code').value.trim();
-      const status = document.getElementById('input-status').value;
-      const rawDate = document.getElementById('input-datetime').value;
-      const location = document.getElementById('input-location').value.trim();
-      const problem = document.getElementById('input-problem').value.trim();
-      const solution = document.getElementById('input-solution').value.trim();
-      const notes = document.getElementById('input-notes').value.trim();
-
-      // Textos dinámicos
-      document.getElementById('preview-title').textContent = title || 'Título del Informe Técnico';
-      document.getElementById('preview-tech').textContent = tech || 'Sin asignar';
-      document.getElementById('sign-tech').textContent = tech ? `Firma: ${tech}` : 'Firma del Técnico';
-      document.getElementById('preview-ref').textContent = `REF: ${code || 'S/N'}`;
-      document.getElementById('preview-location').textContent = location || 'No especificada';
-
-      // Formateo de fecha
-      if (rawDate) {
-        const d = new Date(rawDate);
-        const options = { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
-        document.getElementById('preview-datetime').textContent = d.toLocaleDateString('es-ES', options);
-      } else {
-        document.getElementById('preview-datetime').textContent = 'Fecha no definida';
-      }
-
-      // Estado & Estilos de Badge
-      const statusBadge = document.getElementById('preview-status-badge');
-      statusBadge.textContent = status;
-      statusBadge.className = 'inline-block px-3 py-1 rounded-full text-xs font-bold border ';
-      if (status === 'Resuelto') {
-        statusBadge.className += 'bg-emerald-100 text-emerald-800 border-emerald-200';
-      } else if (status === 'En Progreso') {
-        statusBadge.className += 'bg-blue-100 text-brand-800 border-blue-200';
-      } else if (status === 'Pendiente') {
-        statusBadge.className += 'bg-amber-100 text-amber-800 border-amber-200';
-      } else {
-        statusBadge.className += 'bg-rose-100 text-rose-800 border-rose-200';
-      }
-
-      // Textos de contenido
-      document.getElementById('preview-problem').textContent = problem || 'Sin descripción de problema especificada.';
-      document.getElementById('preview-solution').textContent = solution || 'Sin detalle de la solución o intervención realizada.';
-
-      // Observaciones
-      const notesContainer = document.getElementById('preview-notes-container');
-      if (notes) {
-        notesContainer.classList.remove('hidden');
-        document.getElementById('preview-notes').textContent = notes;
-      } else {
-        notesContainer.classList.add('hidden');
-      }
-
-      // Renderizar Galería de Problema (Antes)
-      const probCountSpan = document.getElementById('preview-problem-count');
-      probCountSpan.textContent = `${problemImages.length} foto${problemImages.length === 1 ? '' : 's'}`;
-      const probGallery = document.getElementById('preview-gallery-problem');
-      if (problemImages.length === 0) {
-        probGallery.innerHTML = `
-          <div class="col-span-2 py-3 text-center text-xs text-slate-400 border border-dashed border-slate-200 rounded-xl bg-slate-50/70">
-            Sin fotografías del problema registradas.
-          </div>
-        `;
-      } else {
-        probGallery.innerHTML = problemImages.map((img, i) => `
-          <div class="relative rounded-xl overflow-hidden border border-rose-200 bg-slate-100 shadow-sm break-inside-avoid">
-            <img src="${img.data}" alt="Problema ${i + 1}" class="w-full h-36 object-cover">
-            <div class="p-1.5 bg-white text-[11px] font-medium text-slate-700 flex justify-between items-center border-t border-rose-100">
-              <span class="truncate pr-2 text-rose-900"><i class="fa-solid fa-triangle-exclamation text-rose-500 mr-1"></i>${img.name || 'Antes'}</span>
-              <span class="text-slate-400 text-[10px]">#P${i + 1}</span>
-            </div>
-          </div>
-        `).join('');
-      }
-
-      // Renderizar Galería de Solución (Después)
-      const solCountSpan = document.getElementById('preview-solution-count');
-      solCountSpan.textContent = `${solutionImages.length} foto${solutionImages.length === 1 ? '' : 's'}`;
-      const solGallery = document.getElementById('preview-gallery-solution');
-      if (solutionImages.length === 0) {
-        solGallery.innerHTML = `
-          <div class="col-span-2 py-3 text-center text-xs text-slate-400 border border-dashed border-slate-200 rounded-xl bg-slate-50/70">
-            Sin fotografías de la solución registradas.
-          </div>
-        `;
-      } else {
-        solGallery.innerHTML = solutionImages.map((img, i) => `
-          <div class="relative rounded-xl overflow-hidden border border-emerald-200 bg-slate-100 shadow-sm break-inside-avoid">
-            <img src="${img.data}" alt="Solución ${i + 1}" class="w-full h-36 object-cover">
-            <div class="p-1.5 bg-white text-[11px] font-medium text-slate-700 flex justify-between items-center border-t border-emerald-100">
-              <span class="truncate pr-2 text-emerald-900"><i class="fa-solid fa-check text-emerald-500 mr-1"></i>${img.name || 'Después'}</span>
-              <span class="text-slate-400 text-[10px]">#S${i + 1}</span>
-            </div>
-          </div>
-        `).join('');
-      }
-
-      // Actualizar timestamp del pie
-      document.getElementById('print-timestamp').textContent = `Impreso el ${new Date().toLocaleDateString('es-ES')} a las ${new Date().toLocaleTimeString('es-ES')}`;
-    }
-
-    // Obtener Geolocalización del navegador
-    function getCurrentLocation() {
-      const btn = document.getElementById('btn-geoloc');
-      if (!navigator.geolocation) {
-        showToast('Geolocalización no soportada en este navegador.', 'error');
-        return;
-      }
-
-      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Localizando...';
-
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const lat = position.coords.latitude.toFixed(5);
-          const lon = position.coords.longitude.toFixed(5);
-          const locString = `Lat: ${lat}, Lon: ${lon} (±${Math.round(position.coords.accuracy)}m)`;
-          
-          document.getElementById('input-location').value = locString;
-          syncPreview();
-          btn.innerHTML = '<i class="fa-solid fa-location-dot"></i> Detectado';
-          showToast('Ubicación GPS obtenida con éxito.');
-          setTimeout(() => {
-            btn.innerHTML = '<i class="fa-solid fa-location-crosshairs"></i> Ubicación Actual';
-          }, 3000);
-        },
-        (error) => {
-          let msg = 'No se pudo obtener la ubicación.';
-          if (error.code === error.PERMISSION_DENIED) {
-            msg = 'Permiso de ubicación denegado por el usuario.';
-          }
-          showToast(msg, 'error');
-          btn.innerHTML = '<i class="fa-solid fa-location-crosshairs"></i> Ubicación Actual';
-        },
-        { enableHighAccuracy: true, timeout: 10000 }
-      );
-    }
-
-    // Validación antes de imprimir
-    function triggerPrint() {
-      const title = document.getElementById('input-title').value.trim();
-      const tech = document.getElementById('input-tech').value.trim();
-
-      if (!title || !tech) {
-        showToast('Por favor completa al menos el título y el técnico antes de imprimir.', 'error');
-        if (!title) document.getElementById('input-title').focus();
-        else if (!tech) document.getElementById('input-tech').focus();
-        return;
-      }
-
-      document.getElementById('print-timestamp').textContent = `Impreso el ${new Date().toLocaleDateString('es-ES')} a las ${new Date().toLocaleTimeString('es-ES')}`;
-      window.print();
-    }
-
-    // Cargar datos de ejemplo con fotos diferenciadas (Antes y Después)
-    function loadDemoData() {
-      document.getElementById('input-title').value = 'Mantenimiento Preventivo y Reparación de Compresor Principal';
-      document.getElementById('input-tech').value = 'Ing. Carlos Mendoza (Mat. 4482)';
-      document.getElementById('input-status').value = 'Resuelto';
-      document.getElementById('input-code').value = 'REP-2026-8941';
-      document.getElementById('input-location').value = 'Planta Industrial Norte - Sala de Máquinas B';
-      document.getElementById('input-problem').value = 'Sobrecalentamiento persistente y corte intermitente por disparo térmico en el motor secundario. Se detectó vibración anormal superior a 4.5 mm/s y rotura de sello de estanqueidad.';
-      document.getElementById('input-solution').value = '1. Desmontaje completo del conjunto y sustitución de rodamiento desgastado.\n2. Instalación de nuevo sello de grafito y rectificado de asiento.\n3. Relleno de fluido refrigerante sintético y balanceo dinámico.\n4. Calibración y prueba en vacío: temperatura estabilizada en 62°C.';
-      document.getElementById('input-notes').value = 'Programar inspección de rutina en 30 días para verificar nivel de presión y ausencia de fugas.';
-
-      // Generar imágenes sintéticas en Canvas para demo
-      const createDemoCanvas = (title, subtitle, color) => {
-        const c = document.createElement('canvas');
-        c.width = 600;
-        c.height = 400;
-        const ctx = c.getContext('2d');
-        ctx.fillStyle = color;
-        ctx.fillRect(0, 0, 600, 400);
-        ctx.fillStyle = '#ffffff';
-        ctx.font = 'bold 22px Inter, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText(title, 300, 185);
-        ctx.font = '14px Inter, sans-serif';
-        ctx.fillStyle = 'rgba(255,255,255,0.85)';
-        ctx.fillText(subtitle, 300, 225);
-        return c.toDataURL('image/jpeg', 0.85);
-      };
-
-      problemImages = [
-        {
-          id: 'p1',
-          data: createDemoCanvas('FALLA: FILTRACIÓN Y ROTURA', 'Evidencia inicial de desgaste', '#be123c'),
-          name: 'Rotura_Sello_Antes.jpg'
-        },
-        {
-          id: 'p2',
-          data: createDemoCanvas('TEMPERATURA ALARMA (94°C)', 'Registro con cámara termográfica', '#991b1b'),
-          name: 'Termografia_Critica.jpg'
-        }
-      ];
-
-      solutionImages = [
-        {
-          id: 's1',
-          data: createDemoCanvas('PIEZA NUEVA MONTADA', 'Sello y rodamientos SKF alineados', '#047857'),
-          name: 'Montaje_Terminado.jpg'
-        },
-        {
-          id: 's2',
-          data: createDemoCanvas('PRUEBA FINAL SATISFACTORIA', 'Temperatura normal (62°C)', '#0f766e'),
-          name: 'Lectura_Optima_Despues.jpg'
-        }
-      ];
-
-      renderThumbnails('problem');
-      renderThumbnails('solution');
-      syncPreview();
-      showToast('Datos y fotos de demostración (Antes y Después) cargados.');
-    }
-
-    // Limpiar el formulario completo
-    function resetForm() {
-      document.getElementById('reportForm').reset();
-      problemImages = [];
-      solutionImages = [];
-      
-      const now = new Date();
-      now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-      document.getElementById('input-datetime').value = now.toISOString().slice(0, 16);
-      document.getElementById('input-code').value = `INF-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
-
-      renderThumbnails('problem');
-      renderThumbnails('solution');
-      syncPreview();
-      showToast('Formulario restablecido.');
-    }
-
-    // Notificaciones Toast flotantes
-    function showToast(message, type = 'success') {
-      const toast = document.getElementById('notification-toast');
-      const toastMsg = document.getElementById('toast-msg');
-      const toastIcon = document.getElementById('toast-icon');
-
-      toastMsg.textContent = message;
-      if (type === 'error') {
-        toastIcon.className = 'fa-solid fa-circle-exclamation text-rose-400 text-lg';
-      } else {
-        toastIcon.className = 'fa-solid fa-circle-check text-emerald-400 text-lg';
-      }
-
-      toast.classList.remove('translate-y-20', 'opacity-0');
-      toast.classList.add('translate-y-0', 'opacity-100');
-
-      setTimeout(() => {
-        toast.classList.remove('translate-y-0', 'opacity-100');
-        toast.classList.add('translate-y-20', 'opacity-0');
-      }, 3500);
-    }
-  </script>
-</body>
-</html>
+  <div class="actions">
+    <!-- BOTÓN DIRECTO AL EXTRACTOR DE TASQUES -->
+    <a href="tasques.html" class="btn btn-tasks">📋 Extractor de Tasques</a>
+    <button class="btn btn-secondary" onclick="limpiarFormulario()">🔄 Limpiar</button>
+    <button class="btn btn-secondary" onclick="cargarEjemplo()">💡 Ejemplo</button>
+    <button class="btn btn-primary" onclick="window.print()">🖨️ Imprimir / Guardar PDF</button>
+  </div>
+</header>
+
+<div class="main-container">
+  <!-- FORMULARIO -->
+  <div class="form-pane no-print">
+    <div class="section-title">
+      <span>Datos del Informe</span>
+      <span style="font-size:11px; color:#64748b; font-weight:normal;">Marratxí Apps
