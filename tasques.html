@@ -176,7 +176,7 @@
   <p class="sub">Àrea d'Educació — Ajuntament de Marratxí</p>
 
   <div class="card-settings">
-    <!-- Clau Gemini segura sense exposició a GitHub -->
+    <!-- Clau Gemini al navegador -->
     <div class="camp">
       <label for="clauApiInput">Clau d'API de Google Gemini:</label>
       <div style="display: flex; gap: 8px;">
@@ -288,7 +288,6 @@
   let nomFitxerNet = "Tasques";
 
   window.addEventListener("DOMContentLoaded", () => {
-    // Carregar clau guardada prèviament
     const clauGuardada = localStorage.getItem("clau_gemini_marratxi");
     if (clauGuardada) {
       document.getElementById("clauApiInput").value = clauGuardada;
@@ -296,7 +295,6 @@
       document.getElementById("clauAvis").style.color = "#16a34a";
     }
 
-    // Carregar logo desat
     const logoDesat = localStorage.getItem("logo_marratxi_b64");
     if (logoDesat) {
       document.getElementById("logoAvis").textContent = "✓ Logotip oficial desat correctament.";
@@ -489,7 +487,8 @@
         }]
       };
 
-      const modelsAProvar = ["gemini-2.5-flash", "gemini-2.0-flash"];
+      // Models actualitzats recomanats per la API de Gemini
+      const modelsAProvar = ["gemini-3.8-flash", "gemini-2.5-flash"];
       let dades = null;
       let darrerError = null;
 
