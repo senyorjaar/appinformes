@@ -6,17 +6,17 @@
   <title>Generador de Informes Técnicos y de Incidentes</title>
   <style>
     :root {
-      --primary: #1e3a8a;
-      --primary-hover: #1d4ed8;
-      --accent: #2563eb;
-      --bg: #f8fafc;
+      --primary: #003366;
+      --primary-hover: #002244;
+      --bg: #f3f5f8;
       --card-bg: #ffffff;
-      --text: #0f172a;
-      --muted: #64748b;
+      --text: #1e293b;
+      --text-muted: #64748b;
       --border: #e2e8f0;
-      --danger: #dc2626;
-      --success: #16a34a;
-      --warning: #ca8a04;
+      --success: #15803d;
+      --warning: #b45309;
+      --danger: #b91c1c;
+      --info: #0284c7;
     }
 
     * {
@@ -30,20 +30,21 @@
       background-color: var(--bg);
       color: var(--text);
       line-height: 1.5;
-      padding-bottom: 60px;
+      padding-bottom: 40px;
     }
 
-    header.topbar {
-      background-color: #ffffff;
+    /* TOPBAR */
+    .topbar {
+      background: #ffffff;
       border-bottom: 1px solid var(--border);
-      padding: 12px 20px;
+      padding: 12px 24px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       position: sticky;
       top: 0;
       z-index: 100;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
     }
 
     .brand {
@@ -53,27 +54,27 @@
     }
 
     .brand-icon {
-      background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+      background: #0284c7;
       color: white;
-      width: 40px;
-      height: 40px;
+      width: 38px;
+      height: 38px;
       border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 20px;
-      font-weight: bold;
     }
 
     .brand-text h1 {
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--text);
+      font-size: 17px;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.3px;
     }
 
     .brand-text p {
       font-size: 12px;
-      color: var(--muted);
+      color: var(--text-muted);
     }
 
     .actions {
@@ -87,26 +88,27 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 8px 14px;
+      padding: 8px 16px;
       border-radius: 6px;
       font-size: 13px;
       font-weight: 600;
       cursor: pointer;
       border: 1px solid transparent;
-      transition: all 0.2s;
       text-decoration: none;
+      transition: all 0.2s;
     }
 
-    .btn-primary { background-color: var(--primary); color: white; }
-    .btn-primary:hover { background-color: var(--primary-hover); }
-    .btn-secondary { background-color: #f1f5f9; color: #334155; border-color: #cbd5e1; }
-    .btn-secondary:hover { background-color: #e2e8f0; }
-    .btn-tasks { background-color: #80146e; color: white; }
-    .btn-tasks:hover { background-color: #6a0f5a; }
+    .btn-primary { background: #003366; color: white; }
+    .btn-primary:hover { background: #002244; }
+    .btn-secondary { background: #ffffff; color: #334155; border-color: #cbd5e1; }
+    .btn-secondary:hover { background: #f8fafc; }
+    .btn-tasks { background: #80146e; color: white; }
+    .btn-tasks:hover { background: #6a0f5a; }
     .btn-sm { padding: 4px 8px; font-size: 11px; }
 
-    .main-container {
-      max-width: 1300px;
+    /* LAYOUT PRINCIPAL */
+    .container {
+      max-width: 1400px;
       margin: 20px auto;
       padding: 0 16px;
       display: grid;
@@ -114,211 +116,309 @@
       gap: 24px;
     }
 
-    @media (max-width: 900px) {
-      .main-container { grid-template-columns: 1fr; }
+    @media (max-width: 1024px) {
+      .container { grid-template-columns: 1fr; }
     }
 
-    .form-pane, .preview-pane {
+    .card {
       background: var(--card-bg);
       border: 1px solid var(--border);
       border-radius: 12px;
       padding: 24px;
-      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
     }
 
-    .section-title {
-      font-size: 14px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      font-weight: 700;
-      color: var(--muted);
-      margin-bottom: 16px;
+    .card-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
       border-bottom: 1px solid var(--border);
-      padding-bottom: 8px;
+    }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .badge-sub {
+      font-size: 11px;
+      background: #eff6ff;
+      color: #1d4ed8;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 600;
     }
 
     .form-group { margin-bottom: 16px; }
-    label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: #334155; }
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      color: #475569;
+      margin-bottom: 6px;
+    }
     .req { color: var(--danger); }
 
     input[type="text"], input[type="datetime-local"], select, textarea {
       width: 100%;
-      padding: 9px 12px;
-      border: 1px solid var(--border);
+      padding: 10px 12px;
+      border: 1px solid #cbd5e1;
       border-radius: 6px;
-      font-size: 13px;
+      font-size: 14px;
       outline: none;
-      transition: border-color 0.2s;
-      background: #fff;
+      background: #ffffff;
+      transition: border 0.2s, box-shadow 0.2s;
     }
 
     input:focus, select:focus, textarea:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
     }
 
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 
-    .upload-zone {
+    /* ZONAS DE FOTOS */
+    .photo-dropzone {
       border: 2px dashed #cbd5e1;
       border-radius: 8px;
       padding: 16px;
       text-align: center;
       cursor: pointer;
-      background: #f8fafc;
       transition: all 0.2s;
     }
 
-    .upload-zone:hover { border-color: var(--accent); background: #eff6ff; }
-    .upload-zone.problem-zone { border-color: #fca5a5; background: #fff5f5; }
-    .upload-zone.solution-zone { border-color: #86efac; background: #f0fdf4; }
+    .drop-problem { background: #fff5f5; border-color: #fca5a5; }
+    .drop-problem:hover { background: #fee2e2; }
+    .drop-solution { background: #f0fdf4; border-color: #86efac; }
+    .drop-solution:hover { background: #dcfce7; }
 
-    .thumbs-container {
+    .thumbs-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-      gap: 10px;
+      grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+      gap: 8px;
       margin-top: 10px;
     }
 
-    .thumb-item {
+    .thumb {
       position: relative;
-      height: 90px;
+      height: 80px;
       border-radius: 6px;
       overflow: hidden;
-      border: 1px solid var(--border);
-      background: #000;
+      border: 1px solid #cbd5e1;
     }
 
-    .thumb-item img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      opacity: 0.9;
-    }
-
-    .thumb-item button {
+    .thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .thumb button {
       position: absolute;
-      top: 4px;
-      right: 4px;
-      background: rgba(220, 38, 38, 0.85);
+      top: 3px;
+      right: 3px;
+      background: rgba(185, 28, 28, 0.9);
       color: white;
       border: none;
       border-radius: 50%;
       width: 20px;
       height: 20px;
+      cursor: pointer;
       font-size: 11px;
       font-weight: bold;
-      cursor: pointer;
+    }
+
+    /* HOJA IMPRIMIBLE TIPO PDF */
+    .sheet-preview {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      padding: 32px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    }
+
+    .sheet-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 2px solid #0f172a;
+      padding-bottom: 12px;
+      margin-bottom: 20px;
+    }
+
+    .sheet-head-left {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .sheet-logo-badge {
+      background: #0f172a;
+      color: white;
+      width: 42px;
+      height: 42px;
+      border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
+      font-size: 20px;
     }
 
-    /* ESTILO HOJA IMPRESIÓN / A4 */
-    .document-preview {
-      background: white;
-      border: 1px solid #cbd5e1;
-      padding: 28px;
-      border-radius: 6px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    .sheet-title h2 {
+      font-size: 18px;
+      font-weight: 900;
+      color: #0f172a;
+      letter-spacing: -0.3px;
     }
 
-    .doc-header {
-      display: flex;
-      justify-content: space-between;
-      border-bottom: 2px solid var(--primary);
-      padding-bottom: 12px;
-      margin-bottom: 16px;
+    .sheet-title p {
+      font-size: 11px;
+      color: #64748b;
+      font-weight: 600;
+      letter-spacing: 0.05em;
     }
 
-    .doc-brand h2 { font-size: 16px; color: var(--primary); font-weight: 800; }
-    .doc-brand p { font-size: 11px; color: var(--muted); }
-    .doc-meta { text-align: right; font-size: 11px; color: var(--muted); }
-    .doc-badge {
+    .sheet-head-right {
+      text-align: right;
+    }
+
+    .badge-status {
       display: inline-block;
-      padding: 2px 8px;
-      border-radius: 4px;
-      font-size: 10px;
+      padding: 3px 10px;
+      border-radius: 9999px;
+      font-size: 11px;
       font-weight: 700;
       text-transform: uppercase;
-      background: #dcfce7;
-      color: #15803d;
+      margin-bottom: 4px;
     }
 
-    .doc-info-table {
-      width: 100%;
-      border-collapse: collapse;
+    .status-resuelto { background: #dcfce7; color: #15803d; }
+    .status-progreso { background: #fef9c3; color: #854d0e; }
+    .status-pendiente { background: #fee2e2; color: #991b1b; }
+    .status-critico { background: #fecaca; color: #7f1d1d; }
+
+    .sheet-ref {
+      font-size: 11px;
+      color: #64748b;
+      font-family: monospace;
+      font-weight: 600;
+    }
+
+    .sheet-subject {
       margin-bottom: 16px;
-      font-size: 12px;
     }
 
-    .doc-info-table td {
-      padding: 6px 8px;
-      border: 1px solid #e2e8f0;
-      background: #f8fafc;
-    }
-
-    .doc-block { margin-bottom: 14px; }
-    .doc-block h3 {
-      font-size: 12px;
+    .sheet-subject span {
+      font-size: 11px;
       text-transform: uppercase;
-      color: #1e3a8a;
-      border-bottom: 1px solid #e2e8f0;
-      padding-bottom: 4px;
-      margin-bottom: 6px;
       font-weight: 700;
+      color: #64748b;
+      letter-spacing: 0.05em;
+      display: block;
+      margin-bottom: 2px;
     }
 
-    .doc-block p {
+    .sheet-subject h3 {
+      font-size: 18px;
+      color: #0f172a;
+      font-weight: 800;
+    }
+
+    .meta-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      padding: 10px 14px;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .meta-item span {
+      display: block;
+      font-size: 10px;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: #64748b;
+    }
+
+    .meta-item strong {
       font-size: 12px;
+      color: #1e293b;
+    }
+
+    .report-section {
+      margin-bottom: 18px;
+    }
+
+    .report-section-title {
+      font-size: 13px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .title-prob { color: #b91c1c; }
+    .title-sol { color: #15803d; }
+    .title-obs { color: #334155; }
+
+    .report-text {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 10px 12px;
+      font-size: 13px;
       color: #334155;
       white-space: pre-wrap;
-      background: #fafafa;
-      padding: 8px;
-      border-radius: 4px;
-      border-left: 3px solid var(--primary);
     }
 
-    .doc-gallery {
+    .gallery-preview {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
       gap: 10px;
-      margin-top: 8px;
+      margin-top: 10px;
     }
 
-    .doc-gallery img {
+    .gallery-preview img {
       width: 100%;
       height: 110px;
       object-fit: cover;
-      border-radius: 4px;
+      border-radius: 6px;
       border: 1px solid #cbd5e1;
     }
 
-    .signatures {
-      margin-top: 35px;
+    .signatures-block {
+      margin-top: 40px;
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 30px;
+      gap: 40px;
       page-break-inside: avoid;
     }
 
-    .sign-box {
-      border-top: 1px solid #94a3b8;
-      text-align: center;
+    .sig-line {
+      border-top: 1px dashed #94a3b8;
       padding-top: 6px;
+      text-align: center;
       font-size: 11px;
-      color: #475569;
+      color: #64748b;
+      font-weight: 600;
     }
 
+    /* ESTILOS DE IMPRESIÓN DIRECTA */
     @media print {
-      body { background: white; padding: 0; }
-      header.topbar, .form-pane, .no-print { display: none !important; }
-      .main-container { display: block; max-width: 100%; margin: 0; padding: 0; }
-      .preview-pane { border: none; padding: 0; box-shadow: none; }
-      .document-preview { border: none; padding: 0; box-shadow: none; }
+      body { background: #ffffff; padding: 0; }
+      .no-print, .topbar, .card:first-child { display: none !important; }
+      .container { display: block; max-width: 100%; margin: 0; padding: 0; }
+      .card { border: none; padding: 0; box-shadow: none; }
+      .sheet-preview { border: none; padding: 0; box-shadow: none; }
     }
   </style>
 </head>
@@ -333,7 +433,7 @@
     </div>
   </div>
   <div class="actions">
-    <!-- BOTÓN DIRECTO AL EXTRACTOR DE TASQUES -->
+    <!-- BOTÓN DE ENLACE A TASQUES -->
     <a href="tasques.html" class="btn btn-tasks">📋 Extractor de Tasques</a>
     <button class="btn btn-secondary" onclick="limpiarFormulario()">🔄 Limpiar</button>
     <button class="btn btn-secondary" onclick="cargarEjemplo()">💡 Ejemplo</button>
@@ -341,9 +441,308 @@
   </div>
 </header>
 
-<div class="main-container">
+<div class="container">
   <!-- FORMULARIO -->
-  <div class="form-pane no-print">
-    <div class="section-title">
-      <span>Datos del Informe</span>
-      <span style="font-size:11px; color:#64748b; font-weight:normal;">Marratxí Apps
+  <div class="card no-print">
+    <div class="card-header">
+      <div class="card-title">📝 Formulario del Informe</div>
+      <span class="badge-sub">Edición Directa</span>
+    </div>
+
+    <div class="form-group">
+      <label for="titulo">Título del Informe <span class="req">*</span></label>
+      <input type="text" id="titulo" placeholder="Ej: Falla en Sistema Hidráulico - Bomba 02" oninput="actualizarVista()">
+    </div>
+
+    <div class="grid-2">
+      <div class="form-group">
+        <label for="tecnico">Técnico / Responsable <span class="req">*</span></label>
+        <input type="text" id="tecnico" placeholder="Nombre completo" oninput="actualizarVista()">
+      </div>
+      <div class="form-group">
+        <label for="estado">Estado Actual</label>
+        <select id="estado" onchange="actualizarVista()">
+          <option value="Resuelto">✅ Resuelto</option>
+          <option value="En Progreso">⏳ En Progreso</option>
+          <option value="Pendiente">⚠️ Pendiente</option>
+          <option value="Crítico">🚨 Crítico</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="form-group">
+        <label for="fecha">Fecha y Hora</label>
+        <input type="datetime-local" id="fecha" oninput="actualizarVista()">
+      </div>
+      <div class="form-group">
+        <label for="referencia">Código / Nro. Referencia</label>
+        <input type="text" id="referencia" oninput="actualizarVista()">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+        <label for="ubicacion" style="margin-bottom:0;">Ubicación del Suceso</label>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="obtenerGPS()">📍 Ubicación Actual</button>
+      </div>
+      <input type="text" id="ubicacion" placeholder="Dirección, sede, sala o coordenadas" oninput="actualizarVista()">
+    </div>
+
+    <!-- PROBLEMA -->
+    <div class="form-group">
+      <label for="problema">Descripción del Problema / Falla <span class="req">*</span></label>
+      <textarea id="problema" rows="3" placeholder="Detalle los síntomas, causa aparente, alcance o anomalía detectada..." oninput="actualizarVista()"></textarea>
+    </div>
+
+    <div class="form-group">
+      <label>Evidencia del Problema (Antes)</label>
+      <div class="photo-dropzone drop-problem" onclick="document.getElementById('inputFotosProb').click()">
+        <p style="font-size:13px; color:#b91c1c; font-weight:bold;">📸 Pulsa para tomar o subir fotos del problema</p>
+        <span style="font-size:11px; color:#64748b;">Puedes adjuntar múltiples imágenes</span>
+        <input type="file" id="inputFotosProb" accept="image/*" multiple style="display:none" onchange="subirFotos(event, 'problema')">
+      </div>
+      <div class="thumbs-grid" id="thumbsProb"></div>
+    </div>
+
+    <!-- SOLUCIÓN -->
+    <div class="form-group">
+      <label for="solucion">Solución Aplicada / Acción Correctiva</label>
+      <textarea id="solucion" rows="3" placeholder="Detalle las tareas realizadas, componentes cambiados o ajustes aplicados..." oninput="actualizarVista()"></textarea>
+    </div>
+
+    <div class="form-group">
+      <label>Evidencia de la Solución (Después)</label>
+      <div class="photo-dropzone drop-solution" onclick="document.getElementById('inputFotosSol').click()">
+        <p style="font-size:13px; color:#15803d; font-weight:bold;">📸 Pulsa para tomar o subir fotos del resultado</p>
+        <span style="font-size:11px; color:#64748b;">Puedes adjuntar múltiples imágenes</span>
+        <input type="file" id="inputFotosSol" accept="image/*" multiple style="display:none" onchange="subirFotos(event, 'solucion')">
+      </div>
+      <div class="thumbs-grid" id="thumbsSol"></div>
+    </div>
+
+    <div class="form-group">
+      <label for="observaciones">Observaciones / Recomendaciones Futuras</label>
+      <textarea id="observaciones" rows="2" placeholder="Notas sobre piezas pendientes, próximos mantenimientos, etc." oninput="actualizarVista()"></textarea>
+    </div>
+  </div>
+
+  <!-- HOJA TIPO PDF -->
+  <div class="card">
+    <div class="sheet-preview">
+      <div class="sheet-head">
+        <div class="sheet-head-left">
+          <div class="sheet-logo-badge">📋</div>
+          <div class="sheet-title">
+            <h2>INFORME DE INCIDENCIA TÉCNICA</h2>
+            <p>DOCUMENTO OFICIAL DE INSPECCIÓN Y SERVICIO</p>
+          </div>
+        </div>
+        <div class="sheet-head-right">
+          <span class="badge-status status-resuelto" id="v_badge">Resuelto</span>
+          <div class="sheet-ref">REF: <span id="v_ref">INF-2026-0000</span></div>
+        </div>
+      </div>
+
+      <div class="sheet-subject">
+        <span>Asunto del Informe</span>
+        <h3 id="v_titulo">Título del Informe Técnico</h3>
+      </div>
+
+      <div class="meta-box">
+        <div class="meta-item">
+          <span>Fecha y Hora</span>
+          <strong id="v_fecha">-</strong>
+        </div>
+        <div class="meta-item">
+          <span>Responsable Técnico</span>
+          <strong id="v_tecnico">Sin asignar</strong>
+        </div>
+        <div class="meta-item">
+          <span>Ubicación</span>
+          <strong id="v_ubicacion">No especificada</strong>
+        </div>
+      </div>
+
+      <!-- SECCIÓN 1 -->
+      <div class="report-section">
+        <div class="report-section-title title-prob">⚠️ 1. DIAGNÓSTICO Y PROBLEMA REPORTADO</div>
+        <div class="report-text" id="v_problema">Sin descripción de problema especificada.</div>
+        <div style="margin-top:6px; font-size:11px; font-weight:bold; color:#b91c1c;">📸 Evidencia del Problema (Antes)</div>
+        <div class="gallery-preview" id="v_galeriaProb"></div>
+      </div>
+
+      <!-- SECCIÓN 2 -->
+      <div class="report-section">
+        <div class="report-section-title title-sol">✅ 2. ACCIÓN REALIZADA / SOLUCIÓN</div>
+        <div class="report-text" id="v_solucion">Sin intervención documentada.</div>
+        <div style="margin-top:6px; font-size:11px; font-weight:bold; color:#15803d;">📸 Evidencia de la Solución (Después)</div>
+        <div class="gallery-preview" id="v_galeriaSol"></div>
+      </div>
+
+      <!-- SECCIÓN 3 -->
+      <div class="report-section" id="v_blockObs">
+        <div class="report-section-title title-obs">📝 3. OBSERVACIONES Y RECOMENDACIONES</div>
+        <div class="report-text" id="v_observaciones">Ninguna observación adicional registrada.</div>
+      </div>
+
+      <div class="signatures-block">
+        <div class="sig-line">
+          <div style="height:35px;"></div>
+          Firma del Técnico Responsable
+        </div>
+        <div class="sig-line">
+          <div style="height:35px;"></div>
+          Conforme / Firma del Cliente
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let fotosProb = [];
+  let fotosSol = [];
+
+  function crearReferencia() {
+    const d = new Date();
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    const r = Math.floor(100 + Math.random() * 900);
+    return `INF-${y}${m}${day}-${r}`;
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('referencia').value = crearReferencia();
+    const now = new Date();
+    now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+    document.getElementById('fecha').value = now.toISOString().slice(0, 16);
+    actualizarVista();
+  });
+
+  function actualizarVista() {
+    document.getElementById('v_titulo').textContent = document.getElementById('titulo').value || 'Título del Informe Técnico';
+    document.getElementById('v_tecnico').textContent = document.getElementById('tecnico').value || 'Sin asignar';
+    document.getElementById('v_fecha').textContent = document.getElementById('fecha').value.replace('T', ' ') || '-';
+    document.getElementById('v_ref').textContent = document.getElementById('referencia').value || 'INF-000';
+    document.getElementById('v_ubicacion').textContent = document.getElementById('ubicacion').value || 'No especificada';
+    document.getElementById('v_problema').textContent = document.getElementById('problema').value || 'Sin descripción de problema especificada.';
+    document.getElementById('v_solucion').textContent = document.getElementById('solucion').value || 'Sin intervención documentada.';
+    document.getElementById('v_observaciones').textContent = document.getElementById('observaciones').value || 'Ninguna observación adicional registrada.';
+
+    const est = document.getElementById('estado').value;
+    const badge = document.getElementById('v_badge');
+    badge.textContent = est;
+    badge.className = 'badge-status ' + (
+      est === 'Resuelto' ? 'status-resuelto' :
+      est === 'En Progreso' ? 'status-progreso' :
+      est === 'Pendiente' ? 'status-pendiente' : 'status-critico'
+    );
+
+    dibujarGaleria('problema');
+    dibujarGaleria('solucion');
+  }
+
+  function subirFotos(e, tipo) {
+    const files = Array.from(e.target.files);
+    if (!files.length) return;
+
+    files.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = (evt) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const maxDim = 1000;
+          let w = img.width, h = img.height;
+          if (w > h && w > maxDim) { h = Math.round((h * maxDim) / w); w = maxDim; }
+          else if (h > maxDim) { w = Math.round((w * maxDim) / h); h = maxDim; }
+          canvas.width = w; canvas.height = h;
+          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+          const b64 = canvas.toDataURL('image/jpeg', 0.75);
+
+          if (tipo === 'problema') fotosProb.push(b64);
+          else fotosSol.push(b64);
+
+          dibujarMiniaturas(tipo);
+          dibujarGaleria(tipo);
+        };
+        img.src = evt.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function dibujarMiniaturas(tipo) {
+    const cont = tipo === 'problema' ? document.getElementById('thumbsProb') : document.getElementById('thumbsSol');
+    const arr = tipo === 'problema' ? fotosProb : fotosSol;
+    cont.innerHTML = '';
+    arr.forEach((src, idx) => {
+      const d = document.createElement('div');
+      d.className = 'thumb';
+      d.innerHTML = `<img src="${src}"><button onclick="quitarFoto('${tipo}', ${idx})">×</button>`;
+      cont.appendChild(d);
+    });
+  }
+
+  function dibujarGaleria(tipo) {
+    const cont = tipo === 'problema' ? document.getElementById('v_galeriaProb') : document.getElementById('v_galeriaSol');
+    const arr = tipo === 'problema' ? fotosProb : fotosSol;
+    cont.innerHTML = '';
+    arr.forEach(src => {
+      const img = document.createElement('img');
+      img.src = src;
+      cont.appendChild(img);
+    });
+  }
+
+  function quitarFoto(tipo, idx) {
+    if (tipo === 'problema') fotosProb.splice(idx, 1);
+    else fotosSol.splice(idx, 1);
+    dibujarMiniaturas(tipo);
+    dibujarGaleria(tipo);
+  }
+
+  function obtenerGPS() {
+    if (!navigator.geolocation) { alert('Geolocalización no soportada en este navegador.'); return; }
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const coords = `Lat: ${pos.coords.latitude.toFixed(5)}, Lon: ${pos.coords.longitude.toFixed(5)}`;
+        document.getElementById('ubicacion').value = coords;
+        actualizarVista();
+      },
+      () => alert('No se pudo obtener la posición. Comprueba los permisos de ubicación de tu dispositivo.')
+    );
+  }
+
+  function cargarEjemplo() {
+    document.getElementById('titulo').value = 'Falla en Sistema Hidráulico - Bomba 02';
+    document.getElementById('tecnico').value = 'Johnnier Aristizabal';
+    document.getElementById('estado').value = 'Resuelto';
+    document.getElementById('ubicacion').value = 'Marratxí - Sala de Bombas Principal';
+    document.getElementById('problema').value = 'Fuga de presión detectada en la válvula de retorno. Ruidos anómalos durante el ciclo de arranque.';
+    document.getElementById('solucion').value = 'Sustitución de junta de estanqueidad, purgado del circuito y calibración de presostato. Pruebas operativas al 100%.';
+    document.getElementById('observaciones').value = 'Se recomienda revisión rutinaria dentro de 90 días.';
+    actualizarVista();
+  }
+
+  function limpiarFormulario() {
+    if (!confirm('¿Deseas reiniciar todos los campos del informe?')) return;
+    document.getElementById('titulo').value = '';
+    document.getElementById('tecnico').value = '';
+    document.getElementById('ubicacion').value = '';
+    document.getElementById('problema').value = '';
+    document.getElementById('solucion').value = '';
+    document.getElementById('observaciones').value = '';
+    fotosProb = [];
+    fotosSol = [];
+    dibujarMiniaturas('problema');
+    dibujarMiniaturas('solucion');
+    document.getElementById('referencia').value = crearReferencia();
+    actualizarVista();
+  }
+</script>
+
+</body>
+</html>
