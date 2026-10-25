@@ -2,7 +2,6 @@
 <html lang="ca">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Extractor de Tasques a Excel i PDF — Marratxí</title>
   <style>
     body {
@@ -22,29 +21,27 @@
       border-radius: 8px;
       box-shadow: 0 2px 10px rgba(0,0,0,0.08);
     }
-    .nav-bar {
+    .nav-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
       padding-bottom: 12px;
-      border-bottom: 1px solid #e5e7eb;
+      border-bottom: 1px solid #e0e0e0;
     }
     .btn-nav {
+      background: #003366;
+      color: #fff;
+      text-decoration: none;
+      padding: 8px 14px;
+      font-size: 13px;
+      font-weight: bold;
+      border-radius: 5px;
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      background: #f1f5f9;
-      color: #1e293b;
-      text-decoration: none;
-      padding: 8px 14px;
-      border-radius: 6px;
-      font-size: 13px;
-      font-weight: bold;
-      border: 1px solid #cbd5e1;
-      transition: background 0.2s;
     }
-    .btn-nav:hover { background: #e2e8f0; }
+    .btn-nav:hover { background: #002244; }
     h2 { color: #80146e; margin-top: 0; margin-bottom: 4px; }
     p.sub { color: #666; margin-top: 0; margin-bottom: 20px; font-size: 14px; }
     
@@ -169,26 +166,24 @@
 <body>
 
 <div class="box no-print">
-  <!-- Barra de navegacio a l'altra App -->
-  <div class="nav-bar">
-    <a href="index.html" class="btn-nav">
-      <span>←</span> Generador d'Informes Tècnics
-    </a>
-    <span style="font-size: 12px; color: #64748b; font-weight: bold;">Marratxí Apps</span>
+  <!-- Botó de navegació al Generador d'Informes -->
+  <div class="nav-header">
+    <a href="index.html" class="btn-nav">← Anar al Generador d'Informes</a>
+    <span style="font-size: 12px; color: #666; font-weight: bold;">Àrea d'Educació</span>
   </div>
 
   <h2>📋 Extractor de Tasques a Excel, PDF i Tasks</h2>
   <p class="sub">Àrea d'Educació — Ajuntament de Marratxí</p>
 
   <div class="card-settings">
-    <!-- Configuracio de la Clau API (Guardada al navegador) -->
+    <!-- Clau Gemini segura sense exposició a GitHub -->
     <div class="camp">
-      <label for="apiKeyInput">Clau d'API de Gemini (Google AI):</label>
+      <label for="clauApiInput">Clau d'API de Google Gemini:</label>
       <div style="display: flex; gap: 8px;">
-        <input type="password" id="apiKeyInput" placeholder="Introdueix la teva API Key d'IA..." onchange="desarApiKey()">
-        <button class="btn-sm" type="button" onclick="alternarVisibilitatKey()">👁️</button>
+        <input type="password" id="clauApiInput" placeholder="Introdueix la teva clau AI Studio..." onchange="guardarClauLocal()">
+        <button type="button" class="btn-sm" onclick="mostrarOcultarClau()">👁️</button>
       </div>
-      <span id="keyAvis" style="font-size: 11px; color: #666;">Es guarda automàticament al teu dispositiu de forma privada.</span>
+      <span id="clauAvis" style="font-size: 11px; color: #666;">La clau es desa només al teu navegador i no es puja mai a GitHub.</span>
     </div>
 
     <div class="camp">
@@ -209,7 +204,7 @@
 
   <div id="log"></div>
 
-  <!-- Resultats i Exportacio -->
+  <!-- Resultats i Exportació -->
   <div id="blocResultats" style="display:none; margin-top: 22px;">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
       <h3 id="titolTasques" style="margin: 0; font-size: 15px;">Tasques detectades</h3>
@@ -221,7 +216,7 @@
 
     <div id="llistaTasques" style="max-height: 240px; overflow-y: auto; border: 1px solid #ddd; padding: 8px; border-radius: 4px; margin-bottom: 16px;"></div>
 
-    <!-- Integracio Google Tasks -->
+    <!-- Integració Google Tasks -->
     <div class="card-settings" style="border-left: 4px solid #4285f4;">
       <label style="color: #1a73e8; font-size: 14px;">📂 Sincronitzar amb Google Tasks</label>
       
@@ -246,7 +241,7 @@
       <button id="btnEnviarTasks" class="btn btn-tasks" onclick="enviarAGoogleTasks()">🚀 Enviar Tasques a Google Tasks</button>
     </div>
 
-    <!-- Exportacio Documents -->
+    <!-- Exportació Documents -->
     <div class="card-settings">
       <label for="formatSelect">Format de sortida de document:</label>
       <select id="formatSelect" onchange="canviarFormatUI()" style="margin-bottom: 12px;">
@@ -279,4 +274,428 @@
       </div>
 
       <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
-        <button class="btn btn-green" onclick="descarregarExcelPersonalitzat()">⬇️ Descar
+        <button class="btn btn-green" onclick="descarregarExcelPersonalitzat()">⬇️ Descarregar Excel (.CSV)</button>
+        <button class="btn btn-blue" onclick="imprimirPDF()">🖨️ Imprimir / Guardar com a PDF</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="printableArea" style="display: none;"></div>
+
+<script>
+  let tasquesExtretes = [];
+  let nomFitxerNet = "Tasques";
+
+  window.addEventListener("DOMContentLoaded", () => {
+    // Carregar clau guardada prèviament
+    const clauGuardada = localStorage.getItem("clau_gemini_marratxi");
+    if (clauGuardada) {
+      document.getElementById("clauApiInput").value = clauGuardada;
+      document.getElementById("clauAvis").textContent = "✓ Clau carregada automàticament des del navegador.";
+      document.getElementById("clauAvis").style.color = "#16a34a";
+    }
+
+    // Carregar logo desat
+    const logoDesat = localStorage.getItem("logo_marratxi_b64");
+    if (logoDesat) {
+      document.getElementById("logoAvis").textContent = "✓ Logotip oficial desat correctament.";
+      document.getElementById("logoAvis").style.color = "#16a34a";
+    }
+
+    document.getElementById("logoInput").addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (evt) => {
+          localStorage.setItem("logo_marratxi_b64", evt.target.result);
+          document.getElementById("logoAvis").textContent = "✓ Logotip oficial desat correctament.";
+          document.getElementById("logoAvis").style.color = "#16a34a";
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    carregarLlistesTasks();
+  });
+
+  function guardarClauLocal() {
+    const clau = document.getElementById("clauApiInput").value.trim();
+    if (clau) {
+      localStorage.setItem("clau_gemini_marratxi", clau);
+      document.getElementById("clauAvis").textContent = "✓ Clau desada al navegador amb èxit.";
+      document.getElementById("clauAvis").style.color = "#16a34a";
+    } else {
+      localStorage.removeItem("clau_gemini_marratxi");
+      document.getElementById("clauAvis").textContent = "Cal introduir una clau d'API per processar documents.";
+      document.getElementById("clauAvis").style.color = "#dc2626";
+    }
+  }
+
+  function mostrarOcultarClau() {
+    const input = document.getElementById("clauApiInput");
+    input.type = input.type === "password" ? "text" : "password";
+  }
+
+  function avisar(text, esError = false) {
+    const el = document.getElementById("log");
+    el.textContent = text;
+    el.className = esError ? "err" : "info";
+  }
+
+  function marcarTots(estat) {
+    document.querySelectorAll('#llistaTasques input[type="checkbox"]').forEach(c => c.checked = estat);
+  }
+
+  function canviarFormatUI() {
+    const fmt = document.getElementById("formatSelect").value;
+    const titolInput = document.getElementById("titolDocInput");
+    if (fmt === "1") titolInput.value = "Ordre de Treball / Manteniment";
+    else if (fmt === "2") titolInput.value = "Registre d'Incidències i Avaries";
+    else if (fmt === "3") titolInput.value = "Comanda de Materials / Inventari";
+    else titolInput.value = "Llista de Control Simple";
+  }
+
+  function canviarModeTasks() {
+    const mode = document.querySelector('input[name="modeTasks"]:checked').value;
+    document.getElementById("blocLlistaExistent").style.display = (mode === "existent") ? "block" : "none";
+    document.getElementById("blocLlistaNova").style.display = (mode === "nova") ? "block" : "none";
+  }
+
+  function carregarLlistesTasks() {
+    if (typeof google !== "undefined" && google.script && google.script.run) {
+      google.script.run
+        .withSuccessHandler((llistes) => {
+          const select = document.getElementById("selectTasksList");
+          select.innerHTML = "";
+          if (!llistes || llistes.length === 0) {
+            select.innerHTML = "<option value=''>No s'han trobat llistes</option>";
+            return;
+          }
+          llistes.forEach(l => {
+            const opt = document.createElement("option");
+            opt.value = l.id;
+            opt.textContent = l.title;
+            select.appendChild(opt);
+          });
+        })
+        .withFailureHandler((err) => {
+          console.error(err);
+        })
+        .getGoogleTaskLists();
+    }
+  }
+
+  function enviarAGoogleTasks() {
+    const seleccionades = getTasquesSeleccionades();
+    if (seleccionades.length === 0) {
+      alert("Selecciona almenys una tasca per sincronitzar.");
+      return;
+    }
+
+    const btn = document.getElementById("btnEnviarTasks");
+    const mode = document.querySelector('input[name="modeTasks"]:checked').value;
+    const targetId = document.getElementById("selectTasksList").value;
+    const novaLlista = document.getElementById("nomNovaLlista").value;
+
+    if (mode === "nova" && !novaLlista.trim()) {
+      alert("Si us plau, escriu un nom per a la nova llista.");
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = "⏳ Sincronitzant amb Google Tasks...";
+
+    if (typeof google !== "undefined" && google.script && google.script.run) {
+      google.script.run
+        .withSuccessHandler((res) => {
+          btn.disabled = false;
+          btn.textContent = "🚀 Enviar Tasques a Google Tasks";
+          alert("✅ S'han afegit " + res.count + " tasques a Google Tasks correctament!");
+          if (mode === "nova") carregarLlistesTasks();
+        })
+        .withFailureHandler((err) => {
+          btn.disabled = false;
+          btn.textContent = "🚀 Enviar Tasques a Google Tasks";
+          alert("Error en sincronitzar: " + err.message);
+        })
+        .syncTasksToGoogleTasks(seleccionades, (mode === "existent" ? targetId : null), (mode === "nova" ? novaLlista : null));
+    } else {
+      alert("No s'ha detectat l'entorn de Google Apps Script. Aquesta funció requereix desplegar-se a script.google.com.");
+      btn.disabled = false;
+      btn.textContent = "🚀 Enviar Tasques a Google Tasks";
+    }
+  }
+
+  async function iniciarProcessament() {
+    const clauApi = document.getElementById("clauApiInput").value.trim() || localStorage.getItem("clau_gemini_marratxi");
+    
+    if (!clauApi) {
+      alert("Si us plau, enganxa la teva clau d'API de Google Gemini a la casella superior per continuar.");
+      document.getElementById("clauApiInput").focus();
+      return;
+    }
+
+    const selector = document.getElementById("arxiu");
+    const fitxer = selector.files[0];
+    const boto = document.getElementById("boto");
+
+    if (!fitxer) {
+      alert("Si us plau, selecciona primer el fitxer PDF o imatge.");
+      return;
+    }
+
+    nomFitxerNet = fitxer.name.replace(/\.[^/.]+$/, "");
+    document.getElementById("nomNovaLlista").value = nomFitxerNet;
+    boto.disabled = true;
+    avisar("1/2 Llegint el fitxer local...");
+
+    try {
+      const base64Data = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result.split(',')[1]);
+        reader.onerror = reject;
+        reader.readAsDataURL(fitxer);
+      });
+
+      let tipusMime = fitxer.type;
+      if (!tipusMime) {
+        if (fitxer.name.toLowerCase().endsWith(".pdf")) tipusMime = "application/pdf";
+        else tipusMime = "image/jpeg";
+      }
+
+      avisar("2/2 Connectant amb Gemini per analitzar les incidències...");
+
+      const prompt = 
+        "Analitza aquest document o taula de manteniment/incidències. " +
+        "Llegeix totes les aules, estances o apartats (per exemple Aula 1, Aula 6, Banys 6-7, Pati, etc.) " +
+        "i extreu cadascuna de les tasques, reparacions o materials anotats. " +
+        "Si hi ha múltiples incidències en una mateixa fila/aula, separa-les en línies independents. " +
+        "Escriu cada element en el format: '[Ubicació/Aula] Descripció de la tasca'. " +
+        "Corregeix errors evidents de transcripció i conserva el català o castellà original. " +
+        "Retorna ÚNICAMENT la llista neta, un element per línia, sense guions ni text introductori.";
+
+      const cosPeticio = {
+        contents: [{
+          parts: [
+            { text: prompt },
+            {
+              inlineData: {
+                mimeType: tipusMime,
+                data: base64Data
+              }
+            }
+          ]
+        }]
+      };
+
+      const modelsAProvar = ["gemini-2.5-flash", "gemini-2.0-flash"];
+      let dades = null;
+      let darrerError = null;
+
+      for (const m of modelsAProvar) {
+        try {
+          const url = "https://generativelanguage.googleapis.com/v1beta/models/" + m + ":generateContent?key=" + clauApi;
+          const resposta = await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(cosPeticio)
+          });
+          const jsonResp = await resposta.json();
+          if (!jsonResp.error) {
+            dades = jsonResp;
+            break;
+          } else {
+            darrerError = jsonResp.error.message || JSON.stringify(jsonResp.error);
+          }
+        } catch (e) {
+          darrerError = e.message;
+        }
+      }
+
+      if (!dades) {
+        throw new Error(darrerError || "No s'ha pogut obtenir resposta de l'API de Gemini.");
+      }
+
+      const textRetornat = dades.candidates?.[0]?.content?.parts?.[0]?.text || "";
+
+      tasquesExtretes = textRetornat
+        .split("\n")
+        .map(linia => linia.trim().replace(/^[-*•0-9.\s]+/, ""))
+        .filter(linia => linia.length > 0);
+
+      if (tasquesExtretes.length === 0) {
+        avisar("No s'ha trobat cap incidència o tasca al document.", true);
+      } else {
+        dibuixarTasques();
+        document.getElementById("log").style.display = "none";
+      }
+
+    } catch (err) {
+      console.error(err);
+      avisar("Error detallat: " + err.message, true);
+    } finally {
+      boto.disabled = false;
+    }
+  }
+
+  function dibuixarTasques() {
+    const contenidor = document.getElementById("llistaTasques");
+    contenidor.innerHTML = "";
+    document.getElementById("titolTasques").textContent = "Tasques trobades (" + tasquesExtretes.length + ")";
+
+    tasquesExtretes.forEach((t, i) => {
+      const fila = document.createElement("div");
+      fila.className = "task-row";
+      fila.innerHTML = 
+        '<input type="checkbox" id="chk_' + i + '" checked>' +
+        '<label for="chk_' + i + '">' + t + '</label>';
+      contenidor.appendChild(fila);
+    });
+
+    document.getElementById("blocResultats").style.display = "block";
+  }
+
+  function getTasquesSeleccionades() {
+    const sel = [];
+    tasquesExtretes.forEach((t, i) => {
+      const chk = document.getElementById("chk_" + i);
+      if (chk && chk.checked) sel.push(t);
+    });
+    return sel;
+  }
+
+  function separarUbicacio(item) {
+    let lloc = "";
+    let desc = item;
+    if (item.startsWith("[") && item.includes("]")) {
+      const p = item.split("]");
+      lloc = p[0].replace("[", "").trim();
+      desc = p[1].trim();
+    } else if (item.includes(" | ")) {
+      const p = item.split(" | ");
+      lloc = p[0].trim();
+      desc = p[1].trim();
+    }
+    return { lloc: lloc.replace(/"/g, '""'), desc: desc.replace(/"/g, '""') };
+  }
+
+  function descarregarExcelPersonalitzat() {
+    const tasques = getTasquesSeleccionades();
+    if (tasques.length === 0) {
+      alert("Selecciona almenys una tasca.");
+      return;
+    }
+
+    const fmt = document.getElementById("formatSelect").value;
+    const org = document.getElementById("orgInput").value;
+    const area = document.getElementById("areaInput").value;
+    const titol = document.getElementById("titolDocInput").value;
+    const operari = document.getElementById("operariInput").value;
+    const avui = new Date().toLocaleDateString('ca-ES');
+
+    let csv = "\uFEFF";
+
+    if (fmt === "1") {
+      csv += org + ";;;;\n";
+      csv += area + ";;;;\n";
+      csv += titol + " | Data: " + avui + ";;;;\n\n";
+      csv += "Nº;Revisat;Ubicació / Aula;Descripció de la Tasca;Estat;Signatura / Operari\n";
+      tasques.forEach((item, idx) => {
+        let { lloc, desc } = separarUbicacio(item);
+        csv += (idx + 1) + ';[   ];"' + lloc + '";"' + desc + '";Pendent;"' + operari + '"\n';
+      });
+    } else if (fmt === "2") {
+      csv += "Nº;Data;Edifici / Centre;Descripció d'Avaria o Actuació;Acció Realitzada;Operari\n";
+      tasques.forEach((item, idx) => {
+        let { lloc, desc } = separarUbicacio(item);
+        csv += (idx + 1) + ';' + avui + ';"' + lloc + '";"' + desc + '";"";"' + operari + '"\n';
+      });
+    } else if (fmt === "3") {
+      csv += "Ítem;Quantitat;Unitat;Descripció del Material / Tasca;Ubicació / Destí;Revisat\n";
+      tasques.forEach((item, idx) => {
+        let { lloc, desc } = separarUbicacio(item);
+        csv += (idx + 1) + ';"";"Uts / Caixes";"' + desc + '";"' + lloc + '";[   ]\n';
+      });
+    } else {
+      csv += "Nº;Control;Descripció / Tasca;Estat;Observacions\n";
+      tasques.forEach((item, idx) => {
+        csv += (idx + 1) + ';[   ];"' + item.replace(/"/g, '""') + '";Pendent;""\n';
+      });
+    }
+
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "Marratxi_" + nomFitxerNet + ".csv";
+    link.click();
+    URL.revokeObjectURL(link.href);
+  }
+
+  function imprimirPDF() {
+    const tasques = getTasquesSeleccionades();
+    if (tasques.length === 0) {
+      alert("Selecciona almenys una tasca.");
+      return;
+    }
+
+    const org = document.getElementById("orgInput").value;
+    const area = document.getElementById("areaInput").value;
+    const titol = document.getElementById("titolDocInput").value;
+    const operari = document.getElementById("operariInput").value || "Tècnic responsable";
+    const avui = new Date().toLocaleDateString('ca-ES');
+    const logoB64 = localStorage.getItem("logo_marratxi_b64");
+
+    const printContainer = document.getElementById("printableArea");
+
+    let tableRows = "";
+    tasques.forEach((item, idx) => {
+      let { lloc, desc } = separarUbicacio(item);
+      tableRows += 
+        '<tr>' +
+          '<td style="text-align:center; width: 35px;">' + (idx + 1) + '</td>' +
+          '<td style="text-align:center; width: 45px;">[ &nbsp; ]</td>' +
+          '<td style="width: 140px; font-weight: bold;">' + (lloc || "General") + '</td>' +
+          '<td>' + desc + '</td>' +
+          '<td style="width: 80px; text-align: center;">Pendent</td>' +
+        '</tr>';
+    });
+
+    let logoHtml = logoB64 ? '<img src="' + logoB64 + '" alt="Escut">' : '<h3 style="margin:0; color:#80146e;">' + org + '</h3>';
+
+    printContainer.innerHTML = 
+      '<div class="print-header">' +
+        '<div>' + logoHtml + '</div>' +
+        '<div style="text-align: right;">' +
+          '<div style="font-size: 14px; font-weight: bold; color: #1f497d;">' + org + '</div>' +
+          '<div style="font-size: 13px; font-weight: bold;">' + area + '</div>' +
+          '<div style="font-size: 11px; color: #555;">' + titol + ' | Data: ' + avui + '</div>' +
+        '</div>' +
+      '</div>' +
+
+      '<table class="print-table">' +
+        '<thead>' +
+          '<tr>' +
+            '<th>Nº</th>' +
+            '<th>Rev.</th>' +
+            '<th>Ubicació / Estança</th>' +
+            '<th>Descripció de la Tasca / Incidència</th>' +
+            '<th>Estat</th>' +
+          '</tr>' +
+        '</thead>' +
+        '<tbody>' +
+          tableRows +
+        '</tbody>' +
+      '</table>' +
+
+      '<div class="print-footer">' +
+        '<div><strong>Operari:</strong> ' + operari + '</div>' +
+        '<div class="signature-box">Conforme / Signatura i Segell</div>' +
+      '</div>';
+
+    window.print();
+  }
+</script>
+
+</body>
+</html>
