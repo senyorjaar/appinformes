@@ -580,20 +580,42 @@
         }]
       };
 
-      // Model oficial recomanat
-      const url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=" + clauApi;
-      const resposta = await fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(cosPeticio)
-      });
-      const jsonResp = await resposta.json();
+      // Bucle seqüencial amb alternatives per evitar saturació de models
+      const modelsAProvar = [
+        "gemini-2.5-flash",
+        "gemini-3.8-flash",
+        "gemini-2.5-pro",
+        "gemini-flash-latest"
+      ];
 
-      if (jsonResp.error) {
-        throw new Error(jsonResp.error.message || JSON.stringify(jsonResp.error));
+      let dades = null;
+      let darrerError = null;
+
+      for (const m of modelsAProvar) {
+        try {
+          const url = "https://generativelanguage.googleapis.com/v1beta/models/" + m + ":generateContent?key=" + clauApi;
+          const resposta = await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(cosPeticio)
+          });
+          const jsonResp = await resposta.json();
+          if (!jsonResp.error) {
+            dades = jsonResp;
+            break;
+          } else {
+            darrerError = jsonResp.error.message || JSON.stringify(jsonResp.error);
+          }
+        } catch (e) {
+          darrerError = e.message;
+        }
       }
 
-      const textRetornat = jsonResp.candidates?.[0]?.content?.parts?.[0]?.text || "";
+      if (!dades) {
+        throw new Error(darrerError || "No s'ha pogut obtenir resposta de l'API de Gemini.");
+      }
+
+      const textRetornat = dades.candidates?.[0]?.content?.parts?.[0]?.text || "";
 
       tasquesExtretes = textRetornat
         .split("\n")
