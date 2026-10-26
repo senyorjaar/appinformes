@@ -2,120 +2,210 @@
 <html lang="ca">
 <head>
   <meta charset="UTF-8">
-  <title>Extractor de Tasques a Excel i PDF — Marratxí</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Extractor de Tasques a Excel i PDF — Ajuntament de Marratxí</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f6f8;
-      color: #333;
-      padding: 30px 15px;
+    :root {
+      --primary: #80146e;
+      --primary-dark: #630f55;
+      --secondary: #003366;
+      --bg: #f1f5f9;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #cbd5e1;
+      --danger: #dc2626;
+      --success: #16a34a;
+    }
+
+    * {
+      box-sizing: border-box;
       margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.45;
+      padding-bottom: 40px;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
+      align-items: center;
     }
-    .box {
-      max-width: 760px;
+
+    /* TOPBAR */
+    .topbar {
       width: 100%;
-      background: #fff;
-      padding: 28px;
-      border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-    }
-    .nav-header {
+      background: #ffffff;
+      border-bottom: 2px solid var(--primary);
+      padding: 10px 18px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 18px;
-      padding-bottom: 12px;
-      border-bottom: 1px solid #e0e0e0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      flex-wrap: wrap;
+      gap: 10px;
     }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo {
+      height: 42px;
+      max-width: 160px;
+      object-fit: contain;
+    }
+
+    .brand-text h1 {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--primary);
+      line-height: 1.2;
+    }
+
+    .brand-text p {
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
     .btn-nav {
-      background: #003366;
+      background: var(--secondary);
       color: #fff;
       text-decoration: none;
       padding: 8px 14px;
       font-size: 13px;
       font-weight: bold;
-      border-radius: 5px;
+      border-radius: 6px;
       display: inline-flex;
       align-items: center;
       gap: 6px;
+      white-space: nowrap;
     }
+
     .btn-nav:hover { background: #002244; }
-    h2 { color: #80146e; margin-top: 0; margin-bottom: 4px; }
-    p.sub { color: #666; margin-top: 0; margin-bottom: 20px; font-size: 14px; }
-    
+
+    /* CONTENIDOR */
+    .box {
+      max-width: 800px;
+      width: calc(100% - 24px);
+      margin: 16px auto;
+      background: #fff;
+      padding: 22px;
+      border-radius: 10px;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+
+    @media (max-width: 600px) {
+      .box { padding: 16px; }
+      .brand-logo { height: 36px; }
+      .brand-text h1 { font-size: 13px; }
+    }
+
+    h2 { color: var(--primary); font-size: 18px; margin-bottom: 4px; }
+    p.sub { color: var(--muted); margin-bottom: 18px; font-size: 13px; font-weight: 600; }
+
     .card-settings {
       background: #fafafa;
-      border: 1px solid #e0e0e0;
+      border: 1px solid #e2e8f0;
       padding: 16px;
-      border-radius: 6px;
+      border-radius: 8px;
       margin-bottom: 16px;
     }
-    .camp { margin-bottom: 14px; }
+
+    .camp { margin-bottom: 12px; }
     .camp:last-child { margin-bottom: 0; }
+
     label {
       font-weight: bold;
-      font-size: 13px;
+      font-size: 12px;
+      text-transform: uppercase;
+      color: #475569;
       display: block;
-      margin-bottom: 6px;
-      color: #333;
+      margin-bottom: 5px;
     }
+
     input[type="file"] {
       display: block;
+      width: 100%;
       font-size: 13px;
       margin-bottom: 4px;
     }
+
     input[type="text"], input[type="password"], select {
       width: 100%;
-      padding: 8px 10px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      box-sizing: border-box;
+      padding: 9px 11px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
       font-size: 14px;
     }
+
     .btn {
-      background: #80146e;
+      background: var(--primary);
       color: #fff;
       border: none;
-      padding: 11px 20px;
+      padding: 11px 18px;
       font-size: 14px;
       font-weight: bold;
-      border-radius: 5px;
+      border-radius: 6px;
       cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: background 0.15s;
     }
-    .btn:disabled { background: #999; cursor: not-allowed; }
-    .btn-green { background: #198754; }
-    .btn-blue { background: #0d6efd; }
+
+    .btn:hover { background: var(--primary-dark); }
+    .btn:disabled { background: #94a3b8; cursor: not-allowed; }
+    .btn-green { background: #15803d; }
+    .btn-green:hover { background: #166534; }
+    .btn-blue { background: #0284c7; }
+    .btn-blue:hover { background: #0369a1; }
     .btn-tasks { background: #4285f4; }
+    .btn-tasks:hover { background: #3367d6; }
     .btn-sm {
-      background: #eee;
-      color: #333;
-      border: 1px solid #ccc;
-      padding: 4px 8px;
+      background: #f1f5f9;
+      color: #334155;
+      border: 1px solid #cbd5e1;
+      padding: 5px 10px;
       font-size: 12px;
-      border-radius: 3px;
+      border-radius: 4px;
       cursor: pointer;
+      font-weight: bold;
     }
+
     #log {
-      margin-top: 15px;
+      margin-top: 14px;
       padding: 12px;
-      border-radius: 5px;
-      font-size: 14px;
+      border-radius: 6px;
+      font-size: 13px;
       display: none;
       white-space: pre-wrap;
       word-break: break-word;
     }
-    .info { background: #e7f3fe; color: #0c5460; display: block !important; }
-    .err { background: #f8d7da; color: #721c24; border: 1px solid #f5c2c7; display: block !important; }
+
+    .info { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; display: block !important; }
+    .err { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; display: block !important; }
+
     .task-row {
-      padding: 7px 4px;
-      border-bottom: 1px solid #eee;
+      padding: 8px 6px;
+      border-bottom: 1px solid #f1f5f9;
       display: flex;
       gap: 10px;
       align-items: center;
       font-size: 13px;
     }
+
     .grid-2 {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -123,35 +213,41 @@
       margin-bottom: 12px;
     }
 
+    @media (max-width: 600px) {
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+
+    /* FORMAT D'IMPRESSIÓ PER A FULL A4 */
     @media print {
       body { background: #fff; padding: 0; }
-      .no-print { display: none !important; }
+      .no-print, .topbar { display: none !important; }
       #printableArea { display: block !important; }
+      .box { border: none; box-shadow: none; padding: 0; width: 100%; margin: 0; }
       .print-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        border-bottom: 2px solid #80146e;
+        border-bottom: 2px solid var(--primary);
         padding-bottom: 10px;
-        margin-bottom: 20px;
+        margin-bottom: 18px;
       }
-      .print-header img { max-height: 55px; }
+      .print-header img { max-height: 52px; }
       .print-table {
         width: 100%;
         border-collapse: collapse;
-        font-size: 12px;
+        font-size: 11px;
       }
       .print-table th, .print-table td {
-        border: 1px solid #bbb;
+        border: 1px solid #cbd5e1;
         padding: 6px 8px;
         text-align: left;
       }
-      .print-table th { background: #f0f0f0; color: #80146e; }
+      .print-table th { background: #f8fafc; color: var(--primary); font-weight: bold; }
       .print-footer {
-        margin-top: 40px;
+        margin-top: 35px;
         display: flex;
         justify-content: space-between;
-        font-size: 12px;
+        font-size: 11px;
         page-break-inside: avoid;
       }
       .signature-box {
@@ -165,87 +261,88 @@
 </head>
 <body>
 
-<div class="box no-print">
-  <!-- Botó de navegació al Generador d'Informes -->
-  <div class="nav-header">
-    <a href="index.html" class="btn-nav">← Anar al Generador d'Informes</a>
-    <span style="font-size: 12px; color: #666; font-weight: bold;">Àrea d'Educació</span>
+<!-- BARRA SUPERIOR RESPONSIVA -->
+<header class="topbar no-print">
+  <div class="brand">
+    <img src="logo.png" alt="Ajuntament de Marratxí" class="brand-logo" onerror="this.style.display='none'">
+    <div class="brand-text">
+      <h1>Manteniment i Climatització</h1>
+      <p>Ajuntament de Marratxí</p>
+    </div>
   </div>
+  <a href="index.html" class="btn-nav">← Generador d'Informes</a>
+</header>
 
+<div class="box no-print">
   <h2>📋 Extractor de Tasques a Excel, PDF i Tasks</h2>
-  <p class="sub">Àrea d'Educació — Ajuntament de Marratxí</p>
+  <p class="sub">Processament Intel·ligent de Parts d'Avaries i Manteniment</p>
 
   <div class="card-settings">
-    <!-- Clau Gemini al navegador -->
+    <!-- CLAU GEMINI PERSISTENT -->
     <div class="camp">
       <label for="clauApiInput">Clau d'API de Google Gemini:</label>
       <div style="display: flex; gap: 8px;">
         <input type="password" id="clauApiInput" placeholder="Introdueix la teva clau AI Studio..." onchange="guardarClauLocal()">
         <button type="button" class="btn-sm" onclick="mostrarOcultarClau()">👁️</button>
       </div>
-      <span id="clauAvis" style="font-size: 11px; color: #666;">La clau es desa només al teu navegador i no es puja mai a GitHub.</span>
+      <span id="clauAvis" style="font-size: 11px; color: #64748b;">Es guarda en privat al navegador i no s'exposa mai a GitHub.</span>
     </div>
 
-    <div class="camp">
-      <label for="logoInput">Logotip oficial (logo.png):</label>
-      <input type="file" id="logoInput" accept="image/png, image/jpeg">
-      <span id="logoAvis" style="font-size: 12px; color: #666;">Selecciona l'escut un cop i el navegador el recordarà.</span>
-    </div>
-
+    <!-- DOCUMENT A PROCESSAR -->
     <div class="camp">
       <label for="arxiu">Document a processar (PDF o Imatge):</label>
       <input type="file" id="arxiu" accept=".pdf, .png, .jpg, .jpeg">
     </div>
 
-    <div style="margin-top: 15px;">
+    <div style="margin-top: 14px;">
       <button id="boto" class="btn" onclick="iniciarProcessament()">🔄 Processar Document</button>
     </div>
   </div>
 
   <div id="log"></div>
 
-  <!-- Resultats i Exportació -->
-  <div id="blocResultats" style="display:none; margin-top: 22px;">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-      <h3 id="titolTasques" style="margin: 0; font-size: 15px;">Tasques detectades</h3>
+  <!-- RESULTATS DETECTATS -->
+  <div id="blocResultats" style="display:none; margin-top: 20px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 6px;">
+      <h3 id="titolTasques" style="margin: 0; font-size: 15px; font-weight: 800; color: #0f172a;">Tasques detectades</h3>
       <div style="display: flex; gap: 6px;">
         <button class="btn-sm" onclick="marcarTots(true)">Marcar tots</button>
         <button class="btn-sm" onclick="marcarTots(false)">Desmarcar tots</button>
       </div>
     </div>
 
-    <div id="llistaTasques" style="max-height: 240px; overflow-y: auto; border: 1px solid #ddd; padding: 8px; border-radius: 4px; margin-bottom: 16px;"></div>
+    <div id="llistaTasques" style="max-height: 250px; overflow-y: auto; border: 1px solid #cbd5e1; padding: 8px; border-radius: 6px; margin-bottom: 16px; background: #fff;"></div>
 
-    <!-- Integració Google Tasks -->
+    <!-- SINCRONITZACIÓ GOOGLE TASKS -->
     <div class="card-settings" style="border-left: 4px solid #4285f4;">
-      <label style="color: #1a73e8; font-size: 14px;">📂 Sincronitzar amb Google Tasks</label>
+      <label style="color: #1a73e8; font-size: 13px;">📂 Sincronitzar amb Google Tasks</label>
       
-      <div style="margin-bottom: 10px;">
-        <label><input type="radio" name="modeTasks" value="existent" checked onchange="canviarModeTasks()"> Afegir a una llista existent</label>
-        <label style="margin-left: 15px;"><input type="radio" name="modeTasks" value="nova" onchange="canviarModeTasks()"> Crear una llista nova</label>
+      <div style="margin-bottom: 10px; font-size: 13px;">
+        <label style="display: inline; font-weight: normal;"><input type="radio" name="modeTasks" value="existent" checked onchange="canviarModeTasks()"> Afegir a llista existent</label>
+        <label style="display: inline; font-weight: normal; margin-left: 15px;"><input type="radio" name="modeTasks" value="nova" onchange="canviarModeTasks()"> Crear llista nova</label>
       </div>
 
       <div id="blocLlistaExistent" class="camp">
-        <label for="selectTasksList">Selecciona la llista de Google Tasks:</label>
+        <label for="selectTasksList">Llista de destinació:</label>
         <div style="display: flex; gap: 8px;">
           <select id="selectTasksList"><option value="">Carregant llistes...</option></select>
-          <button class="btn-sm" onclick="carregarLlistesTasks()">🔄 Refrescar</button>
+          <button class="btn-sm" onclick="carregarLlistesTasks()">🔄</button>
         </div>
       </div>
 
       <div id="blocLlistaNova" class="camp" style="display: none;">
         <label for="nomNovaLlista">Nom de la nova llista:</label>
-        <input type="text" id="nomNovaLlista" placeholder="Ex: Incidències Cases Noves">
+        <input type="text" id="nomNovaLlista" placeholder="Ex: Manteniment CEIP Ses Cases Noves">
       </div>
 
-      <button id="btnEnviarTasks" class="btn btn-tasks" onclick="enviarAGoogleTasks()">🚀 Enviar Tasques a Google Tasks</button>
+      <button id="btnEnviarTasks" class="btn btn-tasks" onclick="enviarAGoogleTasks()">🚀 Enviar a Google Tasks</button>
     </div>
 
-    <!-- Exportació Documents -->
+    <!-- FORMATS D'EXPORTACIÓ -->
     <div class="card-settings">
-      <label for="formatSelect">Format de sortida de document:</label>
+      <label for="formatSelect">Format de document:</label>
       <select id="formatSelect" onchange="canviarFormatUI()" style="margin-bottom: 12px;">
-        <option value="1">1. Oficial Marratxí (Capçalera, Àrea d'Educació i Signatura)</option>
+        <option value="1">1. Oficial Marratxí (Capçalera, Àrea i Signatura)</option>
         <option value="2">2. Registre de Manteniment i Incidències</option>
         <option value="3">3. Comanda / Inventari de Materials</option>
         <option value="4">4. Llista de Control Simple (Checklist)</option>
@@ -257,8 +354,23 @@
           <input type="text" id="orgInput" value="AJUNTAMENT DE MARRATXÍ">
         </div>
         <div>
-          <label for="areaInput">Àrea:</label>
-          <input type="text" id="areaInput" value="Àrea d'Educació">
+          <!-- LLISTAT OFICIAL D'ÀREES DE MARRATXÍ -->
+          <label for="areaInput">Àrea Destinatària:</label>
+          <select id="areaInput">
+            <option value="Economia i Educació">Economia i Educació</option>
+            <option value="Neteja Viària, Parcs i Jardins">Neteja Viària, Parcs i Jardins</option>
+            <option value="Contractació i Esports">Contractació i Esports</option>
+            <option value="Alcaldia, Comunicació i Urbanisme">Alcaldia, Comunicació i Urbanisme</option>
+            <option value="Serveis Funeraris i Seguretat Ciudadana">Serveis Funeraris i Seguretat Ciudadana</option>
+            <option value="Promoció Econòmica, Comerç, Indústria i Turisme; Interior i Recursos Humans">Promoció Econòmica, Comerç, Indústria i Turisme; Interior i Recursos Humans</option>
+            <option value="Medi Ambient i Agricultura">Medi Ambient i Agricultura</option>
+            <option value="Serveis Socials, Igualtat, Salut i Consum">Serveis Socials, Igualtat, Salut i Consum</option>
+            <option value="Formació, Ocupació i Joventut">Formació, Ocupació i Joventut</option>
+            <option value="Mobilitat, Transport Públic, Vies i Obres">Mobilitat, Transport Públic, Vies i Obres</option>
+            <option value="Cultura, Ceràmica, Patrimoni Històric i Municipal">Cultura, Ceràmica, Patrimoni Històric i Municipal</option>
+            <option value="Participació Ciutadana, Defensora de la Ciutadania i Transparència">Participació Ciutadana, Defensora de la Ciutadania i Transparència</option>
+            <option value="Gent Gran, Fires i Festes">Gent Gran, Fires i Festes</option>
+          </select>
         </div>
       </div>
 
@@ -288,31 +400,13 @@
   let nomFitxerNet = "Tasques";
 
   window.addEventListener("DOMContentLoaded", () => {
+    // Carregar clau d'API desada al navegador
     const clauGuardada = localStorage.getItem("clau_gemini_marratxi");
     if (clauGuardada) {
       document.getElementById("clauApiInput").value = clauGuardada;
-      document.getElementById("clauAvis").textContent = "✓ Clau carregada automàticament des del navegador.";
+      document.getElementById("clauAvis").textContent = "✓ Clau d'API activa i guardada de forma segura.";
       document.getElementById("clauAvis").style.color = "#16a34a";
     }
-
-    const logoDesat = localStorage.getItem("logo_marratxi_b64");
-    if (logoDesat) {
-      document.getElementById("logoAvis").textContent = "✓ Logotip oficial desat correctament.";
-      document.getElementById("logoAvis").style.color = "#16a34a";
-    }
-
-    document.getElementById("logoInput").addEventListener("change", (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = (evt) => {
-          localStorage.setItem("logo_marratxi_b64", evt.target.result);
-          document.getElementById("logoAvis").textContent = "✓ Logotip oficial desat correctament.";
-          document.getElementById("logoAvis").style.color = "#16a34a";
-        };
-        reader.readAsDataURL(file);
-      }
-    });
 
     carregarLlistesTasks();
   });
@@ -325,7 +419,7 @@
       document.getElementById("clauAvis").style.color = "#16a34a";
     } else {
       localStorage.removeItem("clau_gemini_marratxi");
-      document.getElementById("clauAvis").textContent = "Cal introduir una clau d'API per processar documents.";
+      document.getElementById("clauAvis").textContent = "Introdueix una clau vàlida per processar documents.";
       document.getElementById("clauAvis").style.color = "#dc2626";
     }
   }
@@ -408,20 +502,20 @@
       google.script.run
         .withSuccessHandler((res) => {
           btn.disabled = false;
-          btn.textContent = "🚀 Enviar Tasques a Google Tasks";
+          btn.textContent = "🚀 Enviar a Google Tasks";
           alert("✅ S'han afegit " + res.count + " tasques a Google Tasks correctament!");
           if (mode === "nova") carregarLlistesTasks();
         })
         .withFailureHandler((err) => {
           btn.disabled = false;
-          btn.textContent = "🚀 Enviar Tasques a Google Tasks";
+          btn.textContent = "🚀 Enviar a Google Tasks";
           alert("Error en sincronitzar: " + err.message);
         })
         .syncTasksToGoogleTasks(seleccionades, (mode === "existent" ? targetId : null), (mode === "nova" ? novaLlista : null));
     } else {
-      alert("No s'ha detectat l'entorn de Google Apps Script. Aquesta funció requereix desplegar-se a script.google.com.");
+      alert("La sincronització amb Google Tasks requereix executar-se des d'un complement Google Apps Script.");
       btn.disabled = false;
-      btn.textContent = "🚀 Enviar Tasques a Google Tasks";
+      btn.textContent = "🚀 Enviar a Google Tasks";
     }
   }
 
@@ -429,7 +523,7 @@
     const clauApi = document.getElementById("clauApiInput").value.trim() || localStorage.getItem("clau_gemini_marratxi");
     
     if (!clauApi) {
-      alert("Si us plau, enganxa la teva clau d'API de Google Gemini a la casella superior per continuar.");
+      alert("Si us plau, introdueix la teva clau d'API de Google Gemini a la casella superior.");
       document.getElementById("clauApiInput").focus();
       return;
     }
@@ -446,7 +540,7 @@
     nomFitxerNet = fitxer.name.replace(/\.[^/.]+$/, "");
     document.getElementById("nomNovaLlista").value = nomFitxerNet;
     boto.disabled = true;
-    avisar("1/2 Llegint el fitxer local...");
+    avisar("1/2 Llegint fitxer local...");
 
     try {
       const base64Data = await new Promise((resolve, reject) => {
@@ -466,7 +560,7 @@
 
       const prompt = 
         "Analitza aquest document o taula de manteniment/incidències. " +
-        "Llegeix totes les aules, estances o apartats (per exemple Aula 1, Aula 6, Banys 6-7, Pati, etc.) " +
+        "Llegeix totes les aules, estances o apartats (per exemple Aula 1, Aula 6, Banys, Pati, Sala Polivalent, etc.) " +
         "i extreu cadascuna de les tasques, reparacions o materials anotats. " +
         "Si hi ha múltiples incidències en una mateixa fila/aula, separa-les en línies independents. " +
         "Escriu cada element en el format: '[Ubicació/Aula] Descripció de la tasca'. " +
@@ -487,7 +581,6 @@
         }]
       };
 
-      // Models actualitzats recomanats per la API de Gemini
       const modelsAProvar = ["gemini-3.8-flash", "gemini-2.5-flash"];
       let dades = null;
       let darrerError = null;
@@ -548,7 +641,7 @@
       fila.className = "task-row";
       fila.innerHTML = 
         '<input type="checkbox" id="chk_' + i + '" checked>' +
-        '<label for="chk_' + i + '">' + t + '</label>';
+        '<label for="chk_' + i + '" style="margin-bottom:0; font-weight:normal; cursor:pointer;">' + t + '</label>';
       contenidor.appendChild(fila);
     });
 
@@ -643,7 +736,6 @@
     const titol = document.getElementById("titolDocInput").value;
     const operari = document.getElementById("operariInput").value || "Tècnic responsable";
     const avui = new Date().toLocaleDateString('ca-ES');
-    const logoB64 = localStorage.getItem("logo_marratxi_b64");
 
     const printContainer = document.getElementById("printableArea");
 
@@ -660,15 +752,13 @@
         '</tr>';
     });
 
-    let logoHtml = logoB64 ? '<img src="' + logoB64 + '" alt="Escut">' : '<h3 style="margin:0; color:#80146e;">' + org + '</h3>';
-
     printContainer.innerHTML = 
       '<div class="print-header">' +
-        '<div>' + logoHtml + '</div>' +
+        '<div><img src="logo.png" alt="Ajuntament de Marratxí" onerror="this.style.display=\'none\'"></div>' +
         '<div style="text-align: right;">' +
-          '<div style="font-size: 14px; font-weight: bold; color: #1f497d;">' + org + '</div>' +
-          '<div style="font-size: 13px; font-weight: bold;">' + area + '</div>' +
-          '<div style="font-size: 11px; color: #555;">' + titol + ' | Data: ' + avui + '</div>' +
+          '<div style="font-size: 14px; font-weight: bold; color: #80146e;">' + org + '</div>' +
+          '<div style="font-size: 13px; font-weight: bold; color: #1e293b;">' + area + '</div>' +
+          '<div style="font-size: 11px; color: #64748b;">' + titol + ' | Data: ' + avui + '</div>' +
         '</div>' +
       '</div>' +
 
@@ -688,7 +778,7 @@
       '</table>' +
 
       '<div class="print-footer">' +
-        '<div><strong>Operari:</strong> ' + operari + '</div>' +
+        '<div><strong>Operari / Tècnic:</strong> ' + operari + '</div>' +
         '<div class="signature-box">Conforme / Signatura i Segell</div>' +
       '</div>';
 
