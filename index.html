@@ -1,22 +1,22 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="ca">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Generador de Informes Técnicos y de Incidentes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Manteniment i Climatització — Ajuntament de Marratxí</title>
   <style>
     :root {
-      --primary: #003366;
-      --primary-hover: #002244;
-      --bg: #f3f5f8;
+      --primary: #80146e;
+      --primary-dark: #630f55;
+      --secondary: #003366;
+      --bg: #f1f5f9;
       --card-bg: #ffffff;
-      --text: #1e293b;
-      --text-muted: #64748b;
-      --border: #e2e8f0;
-      --success: #15803d;
-      --warning: #b45309;
-      --danger: #b91c1c;
-      --info: #0284c7;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #cbd5e1;
+      --danger: #dc2626;
+      --success: #16a34a;
+      --warning: #d97706;
     }
 
     * {
@@ -29,22 +29,24 @@
     body {
       background-color: var(--bg);
       color: var(--text);
-      line-height: 1.5;
+      line-height: 1.45;
       padding-bottom: 40px;
     }
 
-    /* TOPBAR */
+    /* CAPÇALERA SUPERIOR */
     .topbar {
       background: #ffffff;
-      border-bottom: 1px solid var(--border);
-      padding: 12px 24px;
+      border-bottom: 2px solid var(--primary);
+      padding: 10px 18px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       position: sticky;
       top: 0;
       z-index: 100;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      flex-wrap: wrap;
+      gap: 10px;
     }
 
     .brand {
@@ -53,152 +55,191 @@
       gap: 12px;
     }
 
-    .brand-icon {
-      background: #0284c7;
-      color: white;
-      width: 38px;
-      height: 38px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
+    .brand-logo {
+      height: 44px;
+      max-width: 170px;
+      object-fit: contain;
     }
 
     .brand-text h1 {
-      font-size: 17px;
+      font-size: 15px;
       font-weight: 800;
-      color: #0f172a;
-      letter-spacing: -0.3px;
+      color: var(--primary);
+      letter-spacing: -0.2px;
+      line-height: 1.2;
     }
 
     .brand-text p {
-      font-size: 12px;
-      color: var(--text-muted);
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 600;
     }
 
     .actions {
       display: flex;
-      gap: 10px;
+      gap: 8px;
       align-items: center;
       flex-wrap: wrap;
+    }
+
+    .lang-selector {
+      display: flex;
+      background: #e2e8f0;
+      border-radius: 6px;
+      padding: 2px;
+      gap: 2px;
+    }
+
+    .lang-btn {
+      border: none;
+      background: transparent;
+      padding: 4px 8px;
+      font-size: 12px;
+      font-weight: bold;
+      border-radius: 4px;
+      cursor: pointer;
+      color: #334155;
+    }
+
+    .lang-btn.active {
+      background: #ffffff;
+      color: var(--primary);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
     }
 
     .btn {
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 6px;
-      padding: 8px 16px;
+      padding: 8px 14px;
       border-radius: 6px;
       font-size: 13px;
       font-weight: 600;
       cursor: pointer;
       border: 1px solid transparent;
       text-decoration: none;
-      transition: all 0.2s;
+      transition: all 0.15s ease;
+      white-space: nowrap;
     }
 
-    .btn-primary { background: #003366; color: white; }
-    .btn-primary:hover { background: #002244; }
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-primary:hover { background: var(--primary-dark); }
     .btn-secondary { background: #ffffff; color: #334155; border-color: #cbd5e1; }
     .btn-secondary:hover { background: #f8fafc; }
-    .btn-tasks { background: #80146e; color: white; }
-    .btn-tasks:hover { background: #6a0f5a; }
+    .btn-tasks { background: #003366; color: white; }
+    .btn-tasks:hover { background: #002244; }
     .btn-sm { padding: 4px 8px; font-size: 11px; }
 
-    /* LAYOUT PRINCIPAL */
+    /* LAYOUT ADAPTABLE */
     .container {
       max-width: 1400px;
-      margin: 20px auto;
-      padding: 0 16px;
+      margin: 16px auto;
+      padding: 0 14px;
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 24px;
+      gap: 20px;
     }
 
     @media (max-width: 1024px) {
       .container { grid-template-columns: 1fr; }
+      .brand-logo { height: 38px; }
+      .brand-text h1 { font-size: 14px; }
     }
 
     .card {
       background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 24px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.03);
     }
 
     .card-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
       padding-bottom: 10px;
-      border-bottom: 1px solid var(--border);
+      border-bottom: 1px solid #e2e8f0;
     }
 
     .card-title {
       font-size: 15px;
       font-weight: 700;
       color: #0f172a;
-      display: flex;
-      align-items: center;
-      gap: 8px;
     }
 
-    .badge-sub {
-      font-size: 11px;
-      background: #eff6ff;
-      color: #1d4ed8;
-      padding: 2px 8px;
-      border-radius: 4px;
-      font-weight: 600;
-    }
-
-    .form-group { margin-bottom: 16px; }
+    .form-group { margin-bottom: 14px; }
     label {
       display: block;
       font-size: 12px;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.03em;
       color: #475569;
-      margin-bottom: 6px;
+      margin-bottom: 5px;
     }
     .req { color: var(--danger); }
 
     input[type="text"], input[type="datetime-local"], select, textarea {
       width: 100%;
-      padding: 10px 12px;
+      padding: 9px 12px;
       border: 1px solid #cbd5e1;
       border-radius: 6px;
       font-size: 14px;
       outline: none;
       background: #ffffff;
-      transition: border 0.2s, box-shadow 0.2s;
+      transition: border-color 0.2s;
     }
 
     input:focus, select:focus, textarea:focus {
-      border-color: #2563eb;
-      box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(128, 20, 110, 0.12);
     }
 
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
 
-    /* ZONAS DE FOTOS */
+    @media (max-width: 600px) {
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #fafafa;
+      padding: 10px 12px;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      margin-bottom: 14px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #334155;
+    }
+
+    .toggle-row input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+
+    /* ZONES DE CÀRREGA DE FOTOS */
     .photo-dropzone {
       border: 2px dashed #cbd5e1;
       border-radius: 8px;
-      padding: 16px;
+      padding: 14px;
       text-align: center;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: background-color 0.2s;
     }
 
     .drop-problem { background: #fff5f5; border-color: #fca5a5; }
-    .drop-problem:hover { background: #fee2e2; }
     .drop-solution { background: #f0fdf4; border-color: #86efac; }
-    .drop-solution:hover { background: #dcfce7; }
 
     .thumbs-grid {
       display: grid;
@@ -209,7 +250,7 @@
 
     .thumb {
       position: relative;
-      height: 80px;
+      height: 75px;
       border-radius: 6px;
       overflow: hidden;
       border: 1px solid #cbd5e1;
@@ -218,67 +259,56 @@
     .thumb img { width: 100%; height: 100%; object-fit: cover; }
     .thumb button {
       position: absolute;
-      top: 3px;
-      right: 3px;
-      background: rgba(185, 28, 28, 0.9);
+      top: 2px;
+      right: 2px;
+      background: rgba(220, 38, 38, 0.9);
       color: white;
       border: none;
       border-radius: 50%;
       width: 20px;
       height: 20px;
-      cursor: pointer;
       font-size: 11px;
       font-weight: bold;
+      cursor: pointer;
     }
 
-    /* HOJA IMPRIMIBLE TIPO PDF */
+    /* FULL IMPRIMIBLE (DOCUMENT A4) */
     .sheet-preview {
       background: #ffffff;
       border: 1px solid #cbd5e1;
-      padding: 32px;
+      padding: 28px;
       border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
     }
 
     .sheet-head {
       display: flex;
       justify-content: space-between;
-      align-items: flex-start;
-      border-bottom: 2px solid #0f172a;
+      align-items: center;
+      border-bottom: 2px solid var(--primary);
       padding-bottom: 12px;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
+      gap: 15px;
     }
 
-    .sheet-head-left {
-      display: flex;
-      gap: 12px;
-      align-items: center;
+    .sheet-logo-img {
+      max-height: 52px;
+      max-width: 200px;
+      object-fit: contain;
     }
 
-    .sheet-logo-badge {
-      background: #0f172a;
-      color: white;
-      width: 42px;
-      height: 42px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
+    .sheet-head-titles h2 {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--primary);
+      text-transform: uppercase;
+      line-height: 1.2;
     }
 
-    .sheet-title h2 {
-      font-size: 18px;
-      font-weight: 900;
-      color: #0f172a;
-      letter-spacing: -0.3px;
-    }
-
-    .sheet-title p {
+    .sheet-head-titles p {
       font-size: 11px;
-      color: #64748b;
-      font-weight: 600;
-      letter-spacing: 0.05em;
+      color: #334155;
+      font-weight: bold;
     }
 
     .sheet-head-right {
@@ -287,44 +317,45 @@
 
     .badge-status {
       display: inline-block;
-      padding: 3px 10px;
+      padding: 3px 9px;
       border-radius: 9999px;
       font-size: 11px;
-      font-weight: 700;
+      font-weight: bold;
       text-transform: uppercase;
-      margin-bottom: 4px;
+      margin-bottom: 3px;
     }
 
     .status-resuelto { background: #dcfce7; color: #15803d; }
-    .status-progreso { background: #fef9c3; color: #854d0e; }
-    .status-pendiente { background: #fee2e2; color: #991b1b; }
+    .status-progreso { background: #fef9c3; color: #b45309; }
+    .status-pendiente { background: #fee2e2; color: #b91c1c; }
     .status-critico { background: #fecaca; color: #7f1d1d; }
 
     .sheet-ref {
       font-size: 11px;
       color: #64748b;
       font-family: monospace;
-      font-weight: 600;
+      font-weight: bold;
     }
 
-    .sheet-subject {
-      margin-bottom: 16px;
+    .sheet-destinatari-box {
+      background: #faf5ff;
+      border-left: 3px solid var(--primary);
+      padding: 8px 12px;
+      margin-bottom: 14px;
+      border-radius: 0 4px 4px 0;
     }
 
-    .sheet-subject span {
-      font-size: 11px;
-      text-transform: uppercase;
-      font-weight: 700;
-      color: #64748b;
-      letter-spacing: 0.05em;
+    .sheet-destinatari-box span {
       display: block;
-      margin-bottom: 2px;
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: var(--primary);
     }
 
-    .sheet-subject h3 {
-      font-size: 18px;
-      color: #0f172a;
-      font-weight: 800;
+    .sheet-destinatari-box strong {
+      font-size: 13px;
+      color: #1e293b;
     }
 
     .meta-box {
@@ -333,34 +364,37 @@
       border-radius: 6px;
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
-      padding: 10px 14px;
-      gap: 12px;
-      margin-bottom: 20px;
+      padding: 10px 12px;
+      gap: 10px;
+      margin-bottom: 16px;
+      font-size: 12px;
+    }
+
+    @media (max-width: 650px) {
+      .meta-box { grid-template-columns: 1fr; }
     }
 
     .meta-item span {
       display: block;
       font-size: 10px;
       text-transform: uppercase;
-      font-weight: 700;
+      font-weight: bold;
       color: #64748b;
     }
 
     .meta-item strong {
-      font-size: 12px;
       color: #1e293b;
     }
 
     .report-section {
-      margin-bottom: 18px;
+      margin-bottom: 14px;
     }
 
     .report-section-title {
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: 0.03em;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
       display: flex;
       align-items: center;
       gap: 6px;
@@ -373,33 +407,33 @@
     .report-text {
       background: #f8fafc;
       border: 1px solid #e2e8f0;
-      border-radius: 6px;
-      padding: 10px 12px;
-      font-size: 13px;
+      border-radius: 5px;
+      padding: 8px 10px;
+      font-size: 12px;
       color: #334155;
       white-space: pre-wrap;
     }
 
     .gallery-preview {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-      gap: 10px;
-      margin-top: 10px;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 8px;
+      margin-top: 6px;
     }
 
     .gallery-preview img {
       width: 100%;
-      height: 110px;
+      height: 100px;
       object-fit: cover;
-      border-radius: 6px;
+      border-radius: 4px;
       border: 1px solid #cbd5e1;
     }
 
     .signatures-block {
-      margin-top: 40px;
+      margin-top: 32px;
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 40px;
+      gap: 30px;
       page-break-inside: avoid;
     }
 
@@ -412,7 +446,7 @@
       font-weight: 600;
     }
 
-    /* ESTILOS DE IMPRESIÓN DIRECTA */
+    /* ESTILS D'IMPRESSIÓ PERMANENTS */
     @media print {
       body { background: #ffffff; padding: 0; }
       .no-print, .topbar, .card:first-child { display: none !important; }
@@ -424,176 +458,217 @@
 </head>
 <body>
 
+<!-- BARRA SUPERIOR -->
 <header class="topbar no-print">
   <div class="brand">
-    <div class="brand-icon">📋</div>
+    <img src="logo.png" alt="Ajuntament de Marratxí" class="brand-logo" onerror="this.style.display='none'">
     <div class="brand-text">
-      <h1>ReporteDoc Pro</h1>
-      <p>Generador e Impresor de Informes de Servicio y Fallas</p>
+      <h1>Manteniment i Climatització</h1>
+      <p>Ajuntament de Marratxí</p>
     </div>
   </div>
   <div class="actions">
-    <!-- BOTÓN DE ENLACE A TASQUES -->
-    <a href="tasques.html" class="btn btn-tasks">📋 Extractor de Tasques</a>
-    <button class="btn btn-secondary" onclick="limpiarFormulario()">🔄 Limpiar</button>
-    <button class="btn btn-secondary" onclick="cargarEjemplo()">💡 Ejemplo</button>
-    <button class="btn btn-primary" onclick="window.print()">🖨️ Imprimir / Guardar PDF</button>
+    <!-- SELECTOR BILINGÜE -->
+    <div class="lang-selector">
+      <button class="lang-btn active" id="btnCA" onclick="canviarIdioma('ca')">CA</button>
+      <button class="lang-btn" id="btnES" onclick="canviarIdioma('es')">ES</button>
+    </div>
+    <a href="tasques.html" class="btn btn-tasks">📋 <span data-i18n="btnTasks">Extractor de Tasques</span></a>
+    <button class="btn btn-secondary" onclick="limpiarFormulario()">🔄 <span data-i18n="btnClean">Netejar</span></button>
+    <button class="btn btn-secondary" onclick="cargarEjemplo()">💡 <span data-i18n="btnExample">Exemple</span></button>
+    <button class="btn btn-primary" onclick="window.print()">🖨️ <span data-i18n="btnPrint">Imprimir / Guardar PDF</span></button>
   </div>
 </header>
 
 <div class="container">
-  <!-- FORMULARIO -->
+  <!-- FORMULARI D'INTRODUCCIÓ -->
   <div class="card no-print">
     <div class="card-header">
-      <div class="card-title">📝 Formulario del Informe</div>
-      <span class="badge-sub">Edición Directa</span>
+      <div class="card-title">📝 <span data-i18n="formTitle">Formulari de l'Informe</span></div>
+      <span style="font-size:11px; color:#80146e; font-weight:bold;">Marratxí</span>
+    </div>
+
+    <!-- OPCIÓ DE RETOLACIÓ OFICIAL -->
+    <div class="toggle-row">
+      <input type="checkbox" id="checkRotulacio" checked onchange="actualitzarVista()">
+      <label for="checkRotulacio" style="margin-bottom:0; cursor:pointer;" data-i18n="labelRotulacio">
+        Incloure retolació i logotip oficial d'Ajuntament de Marratxí
+      </label>
+    </div>
+
+    <!-- DESPLEGABLE D'ÀREES DESTINATÀRIES -->
+    <div class="form-group">
+      <label for="destinatariSelect"><span data-i18n="labelDest">Àrea Destinatària de l'Informe</span> <span class="req">*</span></label>
+      <select id="destinatariSelect" onchange="actualitzarVista()">
+        <option value="Economia i Educació">Economia i Educació</option>
+        <option value="Neteja Viària, Parcs i Jardins">Neteja Viària, Parcs i Jardins</option>
+        <option value="Contractació i Esports">Contractació i Esports</option>
+        <option value="Alcaldia, Comunicació i Urbanisme">Alcaldia, Comunicació i Urbanisme</option>
+        <option value="Serveis Funeraris i Seguretat Ciudadana">Serveis Funeraris i Seguretat Ciudadana</option>
+        <option value="Promoció Econòmica, Comerç, Indústria i Turisme; Interior i Recursos Humans">Promoció Econòmica, Comerç, Indústria i Turisme; Interior i Recursos Humans</option>
+        <option value="Medi Ambient i Agricultura">Medi Ambient i Agricultura</option>
+        <option value="Serveis Socials, Igualtat, Salut i Consum">Serveis Socials, Igualtat, Salut i Consum</option>
+        <option value="Formació, Ocupació i Joventut">Formació, Ocupació i Joventut</option>
+        <option value="Mobilitat, Transport Públic, Vies i Obres">Mobilitat, Transport Públic, Vies i Obres</option>
+        <option value="Cultura, Ceràmica, Patrimoni Històric i Municipal">Cultura, Ceràmica, Patrimoni Històric i Municipal</option>
+        <option value="Participació Ciutadana, Defensora de la Ciutadania i Transparència">Participació Ciutadana, Defensora de la Ciutadania i Transparència</option>
+        <option value="Gent Gran, Fires i Festes">Gent Gran, Fires i Festes</option>
+      </select>
     </div>
 
     <div class="form-group">
-      <label for="titulo">Título del Informe <span class="req">*</span></label>
-      <input type="text" id="titulo" placeholder="Ej: Falla en Sistema Hidráulico - Bomba 02" oninput="actualizarVista()">
+      <label for="titulo"><span data-i18n="labelTitle">Títol de la Incidència / Actuació</span> <span class="req">*</span></label>
+      <input type="text" id="titulo" placeholder="Ex: Avaria climatitzador sala d'actes" oninput="actualitzarVista()">
     </div>
 
     <div class="grid-2">
       <div class="form-group">
-        <label for="tecnico">Técnico / Responsable <span class="req">*</span></label>
-        <input type="text" id="tecnico" placeholder="Nombre completo" oninput="actualizarVista()">
+        <label for="tecnico"><span data-i18n="labelTech">Operari / Tècnic Responsable</span> <span class="req">*</span></label>
+        <input type="text" id="tecnico" placeholder="Nom complet de l'operari" oninput="actualitzarVista()">
       </div>
       <div class="form-group">
-        <label for="estado">Estado Actual</label>
-        <select id="estado" onchange="actualizarVista()">
-          <option value="Resuelto">✅ Resuelto</option>
-          <option value="En Progreso">⏳ En Progreso</option>
-          <option value="Pendiente">⚠️ Pendiente</option>
-          <option value="Crítico">🚨 Crítico</option>
+        <label for="estado"><span data-i18n="labelState">Estat Actual</span></label>
+        <select id="estado" onchange="actualitzarVista()">
+          <option value="Resuelto">✅ Resolt / Finalitzat</option>
+          <option value="En Progreso">⏳ En Progrés / Curs</option>
+          <option value="Pendiente">⚠️ Pendent / Aturat</option>
+          <option value="Crítico">🚨 Crític / Urgent</option>
         </select>
       </div>
     </div>
 
     <div class="grid-2">
       <div class="form-group">
-        <label for="fecha">Fecha y Hora</label>
-        <input type="datetime-local" id="fecha" oninput="actualizarVista()">
+        <label for="fecha"><span data-i18n="labelDate">Data i Hora</span></label>
+        <input type="datetime-local" id="fecha" oninput="actualitzarVista()">
       </div>
       <div class="form-group">
-        <label for="referencia">Código / Nro. Referencia</label>
-        <input type="text" id="referencia" oninput="actualizarVista()">
+        <label for="referencia"><span data-i18n="labelRef">Codi / Nro. Referència</span></label>
+        <input type="text" id="referencia" oninput="actualitzarVista()">
       </div>
     </div>
 
     <div class="form-group">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-        <label for="ubicacion" style="margin-bottom:0;">Ubicación del Suceso</label>
-        <button type="button" class="btn btn-secondary btn-sm" onclick="obtenerGPS()">📍 Ubicación Actual</button>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
+        <label for="ubicacion" style="margin-bottom:0;" data-i18n="labelLocation">Ubicació / Centre</label>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="obtenirUbicacioGPS()">📍 <span data-i18n="btnGPS">GPS Actual</span></button>
       </div>
-      <input type="text" id="ubicacion" placeholder="Dirección, sede, sala o coordenadas" oninput="actualizarVista()">
+      <input type="text" id="ubicacion" placeholder="Edifici, aula, sala o coordenades" oninput="actualitzarVista()">
     </div>
 
-    <!-- PROBLEMA -->
+    <!-- FOTOGRAFIES PROBLEMA -->
     <div class="form-group">
-      <label for="problema">Descripción del Problema / Falla <span class="req">*</span></label>
-      <textarea id="problema" rows="3" placeholder="Detalle los síntomas, causa aparente, alcance o anomalía detectada..." oninput="actualizarVista()"></textarea>
+      <label for="problema"><span data-i18n="labelProblem">Descripció del Problema / Falla</span> <span class="req">*</span></label>
+      <textarea id="problema" rows="3" placeholder="Detall de l'anomalia, símptomes o causes..." oninput="actualitzarVista()"></textarea>
     </div>
 
     <div class="form-group">
-      <label>Evidencia del Problema (Antes)</label>
+      <label data-i18n="labelProbPhotos">Evidència del Problema (Abans)</label>
       <div class="photo-dropzone drop-problem" onclick="document.getElementById('inputFotosProb').click()">
-        <p style="font-size:13px; color:#b91c1c; font-weight:bold;">📸 Pulsa para tomar o subir fotos del problema</p>
-        <span style="font-size:11px; color:#64748b;">Puedes adjuntar múltiples imágenes</span>
-        <input type="file" id="inputFotosProb" accept="image/*" multiple style="display:none" onchange="subirFotos(event, 'problema')">
+        <p style="font-size:12px; color:#b91c1c; font-weight:bold;" data-i18n="msgAddProbPhotos">📸 Prem aquí per afegir o fer fotos del problema</p>
+        <span style="font-size:11px; color:#64748b;" data-i18n="subAddProbPhotos">Pots adjuntar múltiples imatges de l'avaria</span>
+        <input type="file" id="inputFotosProb" accept="image/*" multiple style="display:none" onchange="pujarFotos(event, 'problema')">
       </div>
       <div class="thumbs-grid" id="thumbsProb"></div>
     </div>
 
-    <!-- SOLUCIÓN -->
+    <!-- FOTOGRAFIES SOLUCIÓ -->
     <div class="form-group">
-      <label for="solucion">Solución Aplicada / Acción Correctiva</label>
-      <textarea id="solucion" rows="3" placeholder="Detalle las tareas realizadas, componentes cambiados o ajustes aplicados..." oninput="actualizarVista()"></textarea>
+      <label for="solucion" data-i18n="labelSolution">Acció Realitzada / Solució Aplicada</label>
+      <textarea id="solucion" rows="3" placeholder="Tasques d'inspecció, canvi de peces o proves..." oninput="actualitzarVista()"></textarea>
     </div>
 
     <div class="form-group">
-      <label>Evidencia de la Solución (Después)</label>
+      <label data-i18n="labelSolPhotos">Evidència de la Solució (Després)</label>
       <div class="photo-dropzone drop-solution" onclick="document.getElementById('inputFotosSol').click()">
-        <p style="font-size:13px; color:#15803d; font-weight:bold;">📸 Pulsa para tomar o subir fotos del resultado</p>
-        <span style="font-size:11px; color:#64748b;">Puedes adjuntar múltiples imágenes</span>
-        <input type="file" id="inputFotosSol" accept="image/*" multiple style="display:none" onchange="subirFotos(event, 'solucion')">
+        <p style="font-size:12px; color:#15803d; font-weight:bold;" data-i18n="msgAddSolPhotos">📸 Prem aquí per afegir o fer fotos de la solució</p>
+        <span style="font-size:11px; color:#64748b;" data-i18n="subAddSolPhotos">Estat final reparat i verificat</span>
+        <input type="file" id="inputFotosSol" accept="image/*" multiple style="display:none" onchange="pujarFotos(event, 'solucion')">
       </div>
       <div class="thumbs-grid" id="thumbsSol"></div>
     </div>
 
     <div class="form-group">
-      <label for="observaciones">Observaciones / Recomendaciones Futuras</label>
-      <textarea id="observaciones" rows="2" placeholder="Notas sobre piezas pendientes, próximos mantenimientos, etc." oninput="actualizarVista()"></textarea>
+      <label for="observaciones" data-i18n="labelObs">Observacions / Materials Utilitzats</label>
+      <textarea id="observaciones" rows="2" placeholder="Materials empleats o recomanacions..." oninput="actualitzarVista()"></textarea>
     </div>
   </div>
 
-  <!-- HOJA TIPO PDF -->
+  <!-- FULL IMPRIMIBLE (VISTA PRÈVIA) -->
   <div class="card">
     <div class="sheet-preview">
-      <div class="sheet-head">
-        <div class="sheet-head-left">
-          <div class="sheet-logo-badge">📋</div>
-          <div class="sheet-title">
-            <h2>INFORME DE INCIDENCIA TÉCNICA</h2>
-            <p>DOCUMENTO OFICIAL DE INSPECCIÓN Y SERVICIO</p>
+      <!-- CAPÇALERA RETOLADA AMB LOGO -->
+      <div class="sheet-head" id="sheetHeader">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <img src="logo.png" alt="Ajuntament de Marratxí" class="sheet-logo-img" id="sheetLogo" onerror="this.style.display='none'">
+          <div class="sheet-head-titles">
+            <h2 id="sheetSectionName">Manteniment i Climatització</h2>
+            <p id="sheetSubName">Ajuntament de Marratxí</p>
           </div>
         </div>
         <div class="sheet-head-right">
-          <span class="badge-status status-resuelto" id="v_badge">Resuelto</span>
+          <span class="badge-status status-resuelto" id="v_badge">Resolt</span>
           <div class="sheet-ref">REF: <span id="v_ref">INF-2026-0000</span></div>
         </div>
       </div>
 
-      <div class="sheet-subject">
-        <span>Asunto del Informe</span>
-        <h3 id="v_titulo">Título del Informe Técnico</h3>
+      <!-- DESTINATARI DESTACAT -->
+      <div class="sheet-destinatari-box">
+        <span data-i18n="docDestLabel">Àrea Destinatària:</span>
+        <strong id="v_destinatari">Economia i Educació</strong>
+      </div>
+
+      <div style="margin-bottom:14px;">
+        <span style="font-size:11px; text-transform:uppercase; font-weight:bold; color:#64748b;" data-i18n="docSubjectLabel">Assumpte de l'Informe</span>
+        <h3 id="v_titulo" style="font-size:17px; color:#0f172a; font-weight:800;">Títol de l'Informe Tècnic</h3>
       </div>
 
       <div class="meta-box">
         <div class="meta-item">
-          <span>Fecha y Hora</span>
+          <span data-i18n="docDateLabel">Data i Hora</span>
           <strong id="v_fecha">-</strong>
         </div>
         <div class="meta-item">
-          <span>Responsable Técnico</span>
-          <strong id="v_tecnico">Sin asignar</strong>
+          <span data-i18n="docTechLabel">Operari / Responsable</span>
+          <strong id="v_tecnico">Sense assignar</strong>
         </div>
         <div class="meta-item">
-          <span>Ubicación</span>
+          <span data-i18n="docLocLabel">Ubicació</span>
           <strong id="v_ubicacion">No especificada</strong>
         </div>
       </div>
 
-      <!-- SECCIÓN 1 -->
+      <!-- SECCIÓ 1: PROBLEMA -->
       <div class="report-section">
-        <div class="report-section-title title-prob">⚠️ 1. DIAGNÓSTICO Y PROBLEMA REPORTADO</div>
-        <div class="report-text" id="v_problema">Sin descripción de problema especificada.</div>
-        <div style="margin-top:6px; font-size:11px; font-weight:bold; color:#b91c1c;">📸 Evidencia del Problema (Antes)</div>
+        <div class="report-section-title title-prob">⚠️ <span data-i18n="docSecProb">1. DIAGNÒSTIC I PROBLEMA REPORTAT</span></div>
+        <div class="report-text" id="v_problema">Sense descripció del problema indicada.</div>
+        <div style="margin-top:6px; font-size:11px; font-weight:bold; color:#b91c1c;" data-i18n="docEvProb">📸 Evidència del Problema (Abans)</div>
         <div class="gallery-preview" id="v_galeriaProb"></div>
       </div>
 
-      <!-- SECCIÓN 2 -->
+      <!-- SECCIÓ 2: SOLUCIÓ -->
       <div class="report-section">
-        <div class="report-section-title title-sol">✅ 2. ACCIÓN REALIZADA / SOLUCIÓN</div>
-        <div class="report-text" id="v_solucion">Sin intervención documentada.</div>
-        <div style="margin-top:6px; font-size:11px; font-weight:bold; color:#15803d;">📸 Evidencia de la Solución (Después)</div>
+        <div class="report-section-title title-sol">✅ <span data-i18n="docSecSol">2. ACCIÓ REALITZADA / SOLUCIÓ APLICADA</span></div>
+        <div class="report-text" id="v_solucion">Sense actuació documentada.</div>
+        <div style="margin-top:6px; font-size:11px; font-weight:bold; color:#15803d;" data-i18n="docEvSol">📸 Evidència de la Solució (Després)</div>
         <div class="gallery-preview" id="v_galeriaSol"></div>
       </div>
 
-      <!-- SECCIÓN 3 -->
-      <div class="report-section" id="v_blockObs">
-        <div class="report-section-title title-obs">📝 3. OBSERVACIONES Y RECOMENDACIONES</div>
-        <div class="report-text" id="v_observaciones">Ninguna observación adicional registrada.</div>
+      <!-- SECCIÓ 3: OBSERVACIONS -->
+      <div class="report-section">
+        <div class="report-section-title title-obs">📝 <span data-i18n="docSecObs">3. OBSERVACIONS I RECOMANACIONS</span></div>
+        <div class="report-text" id="v_observaciones">Cap observació addicional registrada.</div>
       </div>
 
+      <!-- SIGNATURES -->
       <div class="signatures-block">
         <div class="sig-line">
           <div style="height:35px;"></div>
-          Firma del Técnico Responsable
+          <span data-i18n="sigTech">Signatura de l'Operari / Tècnic</span>
         </div>
         <div class="sig-line">
           <div style="height:35px;"></div>
-          Conforme / Firma del Cliente
+          <span data-i18n="sigResp">Conforme / Responsable de l'Àrea</span>
         </div>
       </div>
     </div>
@@ -601,50 +676,170 @@
 </div>
 
 <script>
+  let idiomaActual = 'ca';
   let fotosProb = [];
   let fotosSol = [];
 
-  function crearReferencia() {
+  const traduccions = {
+    ca: {
+      btnTasks: "Extractor de Tasques",
+      btnClean: "Netejar",
+      btnExample: "Exemple",
+      btnPrint: "Imprimir / Guardar PDF",
+      formTitle: "Formulari de l'Informe",
+      labelRotulacio: "Incloure retolació i logotip oficial d'Ajuntament de Marratxí",
+      labelDest: "Àrea Destinatària de l'Informe",
+      labelTitle: "Títol de la Incidència / Actuació",
+      labelTech: "Operari / Tècnic Responsable",
+      labelState: "Estat Actual",
+      labelDate: "Data i Hora",
+      labelRef: "Codi / Nro. Referència",
+      labelLocation: "Ubicació / Centre",
+      btnGPS: "GPS Actual",
+      labelProblem: "Descripció del Problema / Falla",
+      labelProbPhotos: "Evidència del Problema (Abans)",
+      msgAddProbPhotos: "📸 Prem aquí per afegir o fer fotos del problema",
+      subAddProbPhotos: "Pots adjuntar múltiples imatges de l'avaria",
+      labelSolution: "Acció Realitzada / Solució Aplicada",
+      labelSolPhotos: "Evidència de la Solució (Després)",
+      msgAddSolPhotos: "📸 Prem aquí per afegir o fer fotos de la solució",
+      subAddSolPhotos: "Estat final reparat i verificat",
+      labelObs: "Observacions / Materials Utilitzats",
+      docDestLabel: "Àrea Destinatària:",
+      docSubjectLabel: "Assumpte de l'Informe",
+      docDateLabel: "Data i Hora",
+      docTechLabel: "Operari / Responsable",
+      docLocLabel: "Ubicació",
+      docSecProb: "1. DIAGNÒSTIC I PROBLEMA REPORTAT",
+      docEvProb: "📸 Evidència del Problema (Abans)",
+      docSecSol: "2. ACCIÓ REALITZADA / SOLUCIÓ APLICADA",
+      docEvSol: "📸 Evidència de la Solució (Després)",
+      docSecObs: "3. OBSERVACIONS I RECOMANACIONS",
+      sigTech: "Signatura de l'Operari / Tècnic",
+      sigResp: "Conforme / Responsable de l'Àrea"
+    },
+    es: {
+      btnTasks: "Extractor de Tareas",
+      btnClean: "Limpiar",
+      btnExample: "Ejemplo",
+      btnPrint: "Imprimir / Guardar PDF",
+      formTitle: "Formulario del Informe",
+      labelRotulacio: "Incluir rotulación y logotipo oficial del Ajuntament de Marratxí",
+      labelDest: "Área Destinataria del Informe",
+      labelTitle: "Título de la Incidencia / Actuación",
+      labelTech: "Operario / Técnico Responsable",
+      labelState: "Estado Actual",
+      labelDate: "Fecha y Hora",
+      labelRef: "Código / Nro. Referencia",
+      labelLocation: "Ubicación / Centro",
+      btnGPS: "GPS Actual",
+      labelProblem: "Descripción del Problema / Falla",
+      labelProbPhotos: "Evidencia del Problema (Antes)",
+      msgAddProbPhotos: "📸 Pulsa aquí para añadir o tomar fotos del problema",
+      subAddProbPhotos: "Puedes adjuntar múltiples imágenes de la avería",
+      labelSolution: "Acción Realizada / Solución Aplicada",
+      labelSolPhotos: "Evidencia de la Solución (Después)",
+      msgAddSolPhotos: "📸 Pulsa aquí para añadir o tomar fotos de la solución",
+      subAddSolPhotos: "Estado final reparado y comprobado",
+      labelObs: "Observaciones / Materiales Utilizados",
+      docDestLabel: "Área Destinataria:",
+      docSubjectLabel: "Asunto del Informe",
+      docDateLabel: "Fecha y Hora",
+      docTechLabel: "Operario / Responsable",
+      docLocLabel: "Ubicación",
+      docSecProb: "1. DIAGNÓSTICO Y PROBLEMA REPORTADO",
+      docEvProb: "📸 Evidencia del Problema (Antes)",
+      docSecSol: "2. ACCIÓN REALIZADA / SOLUCIÓN APLICADA",
+      docEvSol: "📸 Evidencia de la Solución (Después)",
+      docSecObs: "3. OBSERVACIONES Y RECOMENDACIONES",
+      sigTech: "Firma del Operario / Técnico",
+      sigResp: "Conforme / Responsable del Área"
+    }
+  };
+
+  function canviarIdioma(lang) {
+    idiomaActual = lang;
+    document.getElementById('btnCA').classList.toggle('active', lang === 'ca');
+    document.getElementById('btnES').classList.toggle('active', lang === 'es');
+
+    const dic = traduccions[lang];
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if (dic[key]) el.textContent = dic[key];
+    });
+
+    actualitzarVista();
+  }
+
+  function generarCodiReferencia() {
     const d = new Date();
-    const y = d.getFullYear();
+    const a = d.getFullYear();
     const m = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
+    const dia = String(d.getDate()).padStart(2, '0');
     const r = Math.floor(100 + Math.random() * 900);
-    return `INF-${y}${m}${day}-${r}`;
+    return `INF-${a}${m}${dia}-${r}`;
   }
 
   window.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('referencia').value = crearReferencia();
+    document.getElementById('referencia').value = generarCodiReferencia();
     const now = new Date();
     now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
     document.getElementById('fecha').value = now.toISOString().slice(0, 16);
-    actualizarVista();
+    actualitzarVista();
   });
 
-  function actualizarVista() {
-    document.getElementById('v_titulo').textContent = document.getElementById('titulo').value || 'Título del Informe Técnico';
-    document.getElementById('v_tecnico').textContent = document.getElementById('tecnico').value || 'Sin asignar';
+  function actualitzarVista() {
+    // Retolació opcional
+    const mostrarRotulacio = document.getElementById('checkRotulacio').checked;
+    const header = document.getElementById('sheetHeader');
+    const logo = document.getElementById('sheetLogo');
+    const titols = document.getElementById('sheetSectionName');
+    const sub = document.getElementById('sheetSubName');
+
+    if (mostrarRotulacio) {
+      header.style.display = 'flex';
+      logo.style.display = 'block';
+      titols.textContent = 'Manteniment i Climatització';
+      sub.textContent = 'Ajuntament de Marratxí';
+    } else {
+      logo.style.display = 'none';
+      titols.textContent = (idiomaActual === 'ca') ? 'Informe de Treball Tècnic' : 'Informe de Trabajo Técnico';
+      sub.textContent = (idiomaActual === 'ca') ? 'Document Intern de Manteniment' : 'Documento Interno de Mantenimiento';
+    }
+
+    // Dades principals
+    document.getElementById('v_destinatari').textContent = document.getElementById('destinatariSelect').value;
+    document.getElementById('v_titulo').textContent = document.getElementById('titulo').value || ((idiomaActual === 'ca') ? "Títol de l'Informe Tècnic" : "Título del Informe Técnico");
+    document.getElementById('v_tecnico').textContent = document.getElementById('tecnico').value || ((idiomaActual === 'ca') ? "Sense assignar" : "Sin asignar");
     document.getElementById('v_fecha').textContent = document.getElementById('fecha').value.replace('T', ' ') || '-';
     document.getElementById('v_ref').textContent = document.getElementById('referencia').value || 'INF-000';
-    document.getElementById('v_ubicacion').textContent = document.getElementById('ubicacion').value || 'No especificada';
-    document.getElementById('v_problema').textContent = document.getElementById('problema').value || 'Sin descripción de problema especificada.';
-    document.getElementById('v_solucion').textContent = document.getElementById('solucion').value || 'Sin intervención documentada.';
-    document.getElementById('v_observaciones').textContent = document.getElementById('observaciones').value || 'Ninguna observación adicional registrada.';
+    document.getElementById('v_ubicacion').textContent = document.getElementById('ubicacion').value || ((idiomaActual === 'ca') ? "No especificada" : "No especificada");
+    document.getElementById('v_problema').textContent = document.getElementById('problema').value || ((idiomaActual === 'ca') ? "Sense descripció del problema indicada." : "Sin descripción de problema especificada.");
+    document.getElementById('v_solucion').textContent = document.getElementById('solucion').value || ((idiomaActual === 'ca') ? "Sense actuació documentada." : "Sin intervención documentada.");
+    document.getElementById('v_observaciones').textContent = document.getElementById('observaciones').value || ((idiomaActual === 'ca') ? "Cap observació addicional registrada." : "Ninguna observación adicional registrada.");
 
+    // Estat
     const est = document.getElementById('estado').value;
     const badge = document.getElementById('v_badge');
-    badge.textContent = est;
-    badge.className = 'badge-status ' + (
-      est === 'Resuelto' ? 'status-resuelto' :
-      est === 'En Progreso' ? 'status-progreso' :
-      est === 'Pendiente' ? 'status-pendiente' : 'status-critico'
-    );
+    if (est === 'Resuelto') {
+      badge.textContent = (idiomaActual === 'ca') ? 'Resolt' : 'Resuelto';
+      badge.className = 'badge-status status-resuelto';
+    } else if (est === 'En Progreso') {
+      badge.textContent = (idiomaActual === 'ca') ? 'En Curs' : 'En Progreso';
+      badge.className = 'badge-status status-progreso';
+    } else if (est === 'Pendiente') {
+      badge.textContent = (idiomaActual === 'ca') ? 'Pendent' : 'Pendiente';
+      badge.className = 'badge-status status-pendiente';
+    } else {
+      badge.textContent = (idiomaActual === 'ca') ? 'Crític' : 'Crítico';
+      badge.className = 'badge-status status-critico';
+    }
 
-    dibujarGaleria('problema');
-    dibujarGaleria('solucion');
+    dibuixarGaleria('problema');
+    dibuixarGaleria('solucion');
   }
 
-  function subirFotos(e, tipo) {
+  function pujarFotos(e, tipus) {
     const files = Array.from(e.target.files);
     if (!files.length) return;
 
@@ -662,11 +857,11 @@
           canvas.getContext('2d').drawImage(img, 0, 0, w, h);
           const b64 = canvas.toDataURL('image/jpeg', 0.75);
 
-          if (tipo === 'problema') fotosProb.push(b64);
+          if (tipus === 'problema') fotosProb.push(b64);
           else fotosSol.push(b64);
 
-          dibujarMiniaturas(tipo);
-          dibujarGaleria(tipo);
+          dibuixarMiniatures(tipus);
+          dibuixarGaleria(tipus);
         };
         img.src = evt.target.result;
       };
@@ -674,21 +869,21 @@
     });
   }
 
-  function dibujarMiniaturas(tipo) {
-    const cont = tipo === 'problema' ? document.getElementById('thumbsProb') : document.getElementById('thumbsSol');
-    const arr = tipo === 'problema' ? fotosProb : fotosSol;
+  function dibuixarMiniatures(tipus) {
+    const cont = tipus === 'problema' ? document.getElementById('thumbsProb') : document.getElementById('thumbsSol');
+    const arr = tipus === 'problema' ? fotosProb : fotosSol;
     cont.innerHTML = '';
     arr.forEach((src, idx) => {
       const d = document.createElement('div');
       d.className = 'thumb';
-      d.innerHTML = `<img src="${src}"><button onclick="quitarFoto('${tipo}', ${idx})">×</button>`;
+      d.innerHTML = `<img src="${src}"><button onclick="eliminarFoto('${tipus}', ${idx})">×</button>`;
       cont.appendChild(d);
     });
   }
 
-  function dibujarGaleria(tipo) {
-    const cont = tipo === 'problema' ? document.getElementById('v_galeriaProb') : document.getElementById('v_galeriaSol');
-    const arr = tipo === 'problema' ? fotosProb : fotosSol;
+  function dibuixarGaleria(tipus) {
+    const cont = tipus === 'problema' ? document.getElementById('v_galeriaProb') : document.getElementById('v_galeriaSol');
+    const arr = tipus === 'problema' ? fotosProb : fotosSol;
     cont.innerHTML = '';
     arr.forEach(src => {
       const img = document.createElement('img');
@@ -697,38 +892,49 @@
     });
   }
 
-  function quitarFoto(tipo, idx) {
-    if (tipo === 'problema') fotosProb.splice(idx, 1);
+  function eliminarFoto(tipus, idx) {
+    if (tipus === 'problema') fotosProb.splice(idx, 1);
     else fotosSol.splice(idx, 1);
-    dibujarMiniaturas(tipo);
-    dibujarGaleria(tipo);
+    dibuixarMiniatures(tipus);
+    dibuixarGaleria(tipus);
   }
 
-  function obtenerGPS() {
-    if (!navigator.geolocation) { alert('Geolocalización no soportada en este navegador.'); return; }
+  function obtenirUbicacioGPS() {
+    if (!navigator.geolocation) {
+      alert(idiomaActual === 'ca' ? 'La geolocalització no és compatible.' : 'La geolocalización no es compatible.');
+      return;
+    }
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         const coords = `Lat: ${pos.coords.latitude.toFixed(5)}, Lon: ${pos.coords.longitude.toFixed(5)}`;
         document.getElementById('ubicacion').value = coords;
-        actualizarVista();
+        actualitzarVista();
       },
-      () => alert('No se pudo obtener la posición. Comprueba los permisos de ubicación de tu dispositivo.')
+      () => alert(idiomaActual === 'ca' ? 'No s\'ha pogut obtenir la ubicació.' : 'No se pudo obtener la ubicación.')
     );
   }
 
   function cargarEjemplo() {
-    document.getElementById('titulo').value = 'Falla en Sistema Hidráulico - Bomba 02';
+    document.getElementById('destinatariSelect').value = 'Economia i Educació';
+    document.getElementById('titulo').value = (idiomaActual === 'ca') ? 'Reparació bomba de calor unitat exterior' : 'Reparación bomba de calor unidad exterior';
     document.getElementById('tecnico').value = 'Johnnier Aristizabal';
     document.getElementById('estado').value = 'Resuelto';
-    document.getElementById('ubicacion').value = 'Marratxí - Sala de Bombas Principal';
-    document.getElementById('problema').value = 'Fuga de presión detectada en la válvula de retorno. Ruidos anómalos durante el ciclo de arranque.';
-    document.getElementById('solucion').value = 'Sustitución de junta de estanqueidad, purgado del circuito y calibración de presostato. Pruebas operativas al 100%.';
-    document.getElementById('observaciones').value = 'Se recomienda revisión rutinaria dentro de 90 días.';
-    actualizarVista();
+    document.getElementById('ubicacion').value = 'CEIP Ses Cases Noves - Climatització PB';
+    document.getElementById('problema').value = (idiomaActual === 'ca') 
+      ? 'Falta de rendiment tèrmic a les aules. Sensor de pressió bloquejat i fuga lleu al circuit frigorífic.' 
+      : 'Falta de rendimiento térmico en aulas. Sensor de presión bloqueado y fuga leve en circuito frigorífico.';
+    document.getElementById('solucion').value = (idiomaActual === 'ca')
+      ? 'Segellat de vàlvula de servei, càrrega de gas refrigerant R410A i neteja de filtres d\'evaporador. Paràmetres correctes.'
+      : 'Sellado de válvula de servicio, recarga de refrigerante R410A y limpieza de filtros evaporador. Parámetros correctos.';
+    document.getElementById('observaciones').value = (idiomaActual === 'ca')
+      ? 'Es recomana revisió preventiva mensual del cabal d\'aire.'
+      : 'Se recomienda revisión preventiva mensual del caudal de aire.';
+    actualitzarVista();
   }
 
   function limpiarFormulario() {
-    if (!confirm('¿Deseas reiniciar todos los campos del informe?')) return;
+    const msg = idiomaActual === 'ca' ? 'Vols reiniciar les dades del formulari?' : '¿Deseas reiniciar los datos del formulario?';
+    if (!confirm(msg)) return;
     document.getElementById('titulo').value = '';
     document.getElementById('tecnico').value = '';
     document.getElementById('ubicacion').value = '';
@@ -737,10 +943,10 @@
     document.getElementById('observaciones').value = '';
     fotosProb = [];
     fotosSol = [];
-    dibujarMiniaturas('problema');
-    dibujarMiniaturas('solucion');
-    document.getElementById('referencia').value = crearReferencia();
-    actualizarVista();
+    dibuixarMiniatures('problema');
+    dibuixarMiniatures('solucion');
+    document.getElementById('referencia').value = generarCodiReferencia();
+    actualitzarVista();
   }
 </script>
 
