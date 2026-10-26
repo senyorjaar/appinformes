@@ -17,6 +17,8 @@
       --danger: #dc2626;
       --success: #16a34a;
       --warning: #d97706;
+      --mail: #0284c7;
+      --mail-hover: #0369a1;
     }
 
     * {
@@ -125,9 +127,11 @@
 
     .btn-primary { background: var(--primary); color: white; }
     .btn-primary:hover { background: var(--primary-dark); }
+    .btn-mail { background: var(--mail); color: white; }
+    .btn-mail:hover { background: var(--mail-hover); }
     .btn-secondary { background: #ffffff; color: #334155; border-color: #cbd5e1; }
     .btn-secondary:hover { background: #f8fafc; }
-    .btn-tasks { background: #003366; color: white; }
+    .btn-tasks { background: var(--secondary); color: white; }
     .btn-tasks:hover { background: #002244; }
     .btn-sm { padding: 4px 8px; font-size: 11px; }
 
@@ -474,6 +478,8 @@
       <button class="lang-btn" id="btnES" onclick="canviarIdioma('es')">ES</button>
     </div>
     <a href="tasques.html" class="btn btn-tasks">📋 <span data-i18n="btnTasks">Extractor de Tasques</span></a>
+    <!-- BOTÓ ENVIAR PER CORREU -->
+    <button class="btn btn-mail" onclick="enviarInformeCorreu()">✉️ <span data-i18n="btnMail">Enviar per Correu</span></button>
     <button class="btn btn-secondary" onclick="limpiarFormulario()">🔄 <span data-i18n="btnClean">Netejar</span></button>
     <button class="btn btn-secondary" onclick="cargarEjemplo()">💡 <span data-i18n="btnExample">Exemple</span></button>
     <button class="btn btn-primary" onclick="window.print()">🖨️ <span data-i18n="btnPrint">Imprimir / Guardar PDF</span></button>
@@ -683,6 +689,7 @@
   const traduccions = {
     ca: {
       btnTasks: "Extractor de Tasques",
+      btnMail: "Enviar per Correu",
       btnClean: "Netejar",
       btnExample: "Exemple",
       btnPrint: "Imprimir / Guardar PDF",
@@ -720,6 +727,7 @@
     },
     es: {
       btnTasks: "Extractor de Tareas",
+      btnMail: "Enviar por Correo",
       btnClean: "Limpiar",
       btnExample: "Ejemplo",
       btnPrint: "Imprimir / Guardar PDF",
@@ -789,7 +797,6 @@
   });
 
   function actualitzarVista() {
-    // Retolació opcional
     const mostrarRotulacio = document.getElementById('checkRotulacio').checked;
     const header = document.getElementById('sheetHeader');
     const logo = document.getElementById('sheetLogo');
@@ -807,7 +814,6 @@
       sub.textContent = (idiomaActual === 'ca') ? 'Document Intern de Manteniment' : 'Documento Interno de Mantenimiento';
     }
 
-    // Dades principals
     document.getElementById('v_destinatari').textContent = document.getElementById('destinatariSelect').value;
     document.getElementById('v_titulo').textContent = document.getElementById('titulo').value || ((idiomaActual === 'ca') ? "Títol de l'Informe Tècnic" : "Título del Informe Técnico");
     document.getElementById('v_tecnico').textContent = document.getElementById('tecnico').value || ((idiomaActual === 'ca') ? "Sense assignar" : "Sin asignar");
@@ -818,7 +824,6 @@
     document.getElementById('v_solucion').textContent = document.getElementById('solucion').value || ((idiomaActual === 'ca') ? "Sense actuació documentada." : "Sin intervención documentada.");
     document.getElementById('v_observaciones').textContent = document.getElementById('observaciones').value || ((idiomaActual === 'ca') ? "Cap observació addicional registrada." : "Ninguna observación adicional registrada.");
 
-    // Estat
     const est = document.getElementById('estado').value;
     const badge = document.getElementById('v_badge');
     if (est === 'Resuelto') {
@@ -912,6 +917,58 @@
       },
       () => alert(idiomaActual === 'ca' ? 'No s\'ha pogut obtenir la ubicació.' : 'No se pudo obtener la ubicación.')
     );
+  }
+
+  /* FUNCIÓ D'ENVIAMENT PER CORREU ELECTRÒNIC */
+  function enviarInformeCorreu() {
+    const titol = document.getElementById('titulo').value || ((idiomaActual === 'ca') ? 'Informe de Manteniment' : 'Informe de Mantenimiento');
+    const ref = document.getElementById('referencia').value || 'INF-000';
+    const dest = document.getElementById('destinatariSelect').value;
+    const tec = document.getElementById('tecnico').value || ((idiomaActual === 'ca') ? 'Sense assignar' : 'Sin asignar');
+    const estat = document.getElementById('estado').value;
+    const dataHora = document.getElementById('fecha').value.replace('T', ' ') || '-';
+    const ubi = document.getElementById('ubicacion').value || ((idiomaActual === 'ca') ? 'No especificada' : 'No especificada');
+    const prob = document.getElementById('problema').value || '-';
+    const sol = document.getElementById('solucion').value || '-';
+    const obs = document.getElementById('observaciones').value || '-';
+
+    const assumpte = `[Manteniment i Climatització Marratxí] ${ref} - ${titol}`;
+
+    let cos = "";
+    if (idiomaActual === 'ca') {
+      cos = `INFORME TÈCNIC DE MANTENIMENT I CLIMATITZACIÓ\n` +
+            `AJUNTAMENT DE MARRATXÍ\n` +
+            `--------------------------------------------------\n` +
+            `Referència: ${ref}\n` +
+            `Data i Hora: ${dataHora}\n` +
+            `Àrea Destinatària: ${dest}\n` +
+            `Tècnic / Operari: ${tec}\n` +
+            `Estat Actual: ${estat}\n` +
+            `Ubicació / Centre: ${ubi}\n\n` +
+            `1. DIAGNÒSTIC I PROBLEMA REPORTAT:\n${prob}\n\n` +
+            `2. ACCIÓ REALITZADA / SOLUCIÓ:\n${sol}\n\n` +
+            `3. OBSERVACIONS I MATERIALS:\n${obs}\n\n` +
+            `--------------------------------------------------\n` +
+            `* Nota: Aquest resum s'ha generat des de l'aplicació d'Informes Tècnics de Marratxí. Podeu adjuntar el PDF oficial si ha estat descarregat.`;
+    } else {
+      cos = `INFORME TÉCNICO DE MANTENIMIENTO Y CLIMATIZACIÓN\n` +
+            `AJUNTAMENT DE MARRATXÍ\n` +
+            `--------------------------------------------------\n` +
+            `Referencia: ${ref}\n` +
+            `Fecha y Hora: ${dataHora}\n` +
+            `Área Destinataria: ${dest}\n` +
+            `Técnico / Operario: ${tec}\n` +
+            `Estado Actual: ${estat}\n` +
+            `Ubicación / Centro: ${ubi}\n\n` +
+            `1. DIAGNÓSTICO Y PROBLEMA REPORTADO:\n${prob}\n\n` +
+            `2. ACCIÓN REALIZADA / SOLUCIÓN:\n${sol}\n\n` +
+            `3. OBSERVACIONES Y MATERIALES:\n${obs}\n\n` +
+            `--------------------------------------------------\n` +
+            `* Nota: Este resumen ha sido generado desde la aplicación de Informes Técnicos de Marratxí. Puede adjuntar el PDF oficial si ha sido descargado.`;
+    }
+
+    const mailtoUrl = `mailto:?subject=${encodeURIComponent(assumpte)}&body=${encodeURIComponent(cos)}`;
+    window.location.href = mailtoUrl;
   }
 
   function cargarEjemplo() {
