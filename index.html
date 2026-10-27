@@ -4,6 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Manteniment i Climatització — Ajuntament de Marratxí</title>
+  
+  <!-- Llibreria per generar fitxers PDF reals al navegador -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
   <style>
     :root {
       --primary: #80146e;
@@ -21,8 +25,6 @@
       --mail-hover: #0369a1;
       --drive: #0f9d58;
       --drive-hover: #0b8043;
-      --wa: #25d366;
-      --wa-hover: #1ebd5a;
     }
 
     * {
@@ -39,7 +41,6 @@
       padding-bottom: 40px;
     }
 
-    /* CAPÇALERA */
     .topbar {
       background: #ffffff;
       border-bottom: 2px solid var(--primary);
@@ -141,7 +142,6 @@
     .btn-tasks:hover { background: #002244; }
     .btn-sm { padding: 4px 8px; font-size: 11px; }
 
-    /* LAYOUT ADAPTABLE */
     .container {
       max-width: 1400px;
       margin: 16px auto;
@@ -238,7 +238,6 @@
       cursor: pointer;
     }
 
-    /* ZONES FOTOS */
     .photo-dropzone {
       border: 2px dashed #cbd5e1;
       border-radius: 8px;
@@ -282,11 +281,10 @@
       cursor: pointer;
     }
 
-    /* HOJA IMPRIMIBLE */
     .sheet-preview {
       background: #ffffff;
       border: 1px solid #cbd5e1;
-      padding: 28px;
+      padding: 24px;
       border-radius: 8px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.05);
     }
@@ -296,19 +294,19 @@
       justify-content: space-between;
       align-items: center;
       border-bottom: 2px solid var(--primary);
-      padding-bottom: 12px;
-      margin-bottom: 16px;
+      padding-bottom: 10px;
+      margin-bottom: 14px;
       gap: 15px;
     }
 
     .sheet-logo-img {
-      max-height: 52px;
-      max-width: 200px;
+      max-height: 48px;
+      max-width: 180px;
       object-fit: contain;
     }
 
     .sheet-head-titles h2 {
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 800;
       color: var(--primary);
       text-transform: uppercase;
@@ -327,7 +325,7 @@
       display: inline-block;
       padding: 3px 9px;
       border-radius: 9999px;
-      font-size: 11px;
+      font-size: 10px;
       font-weight: bold;
       text-transform: uppercase;
       margin-bottom: 3px;
@@ -348,21 +346,21 @@
     .sheet-destinatari-box {
       background: #faf5ff;
       border-left: 3px solid var(--primary);
-      padding: 8px 12px;
-      margin-bottom: 14px;
+      padding: 7px 10px;
+      margin-bottom: 12px;
       border-radius: 0 4px 4px 0;
     }
 
     .sheet-destinatari-box span {
       display: block;
-      font-size: 10px;
+      font-size: 9px;
       font-weight: 800;
       text-transform: uppercase;
       color: var(--primary);
     }
 
     .sheet-destinatari-box strong {
-      font-size: 13px;
+      font-size: 12px;
       color: #1e293b;
     }
 
@@ -372,10 +370,10 @@
       border-radius: 6px;
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
-      padding: 10px 12px;
-      gap: 10px;
-      margin-bottom: 16px;
-      font-size: 12px;
+      padding: 8px 10px;
+      gap: 8px;
+      margin-bottom: 14px;
+      font-size: 11px;
     }
 
     @media (max-width: 650px) {
@@ -384,7 +382,7 @@
 
     .meta-item span {
       display: block;
-      font-size: 10px;
+      font-size: 9px;
       text-transform: uppercase;
       font-weight: bold;
       color: #64748b;
@@ -392,15 +390,15 @@
 
     .meta-item strong { color: #1e293b; }
 
-    .report-section { margin-bottom: 14px; }
+    .report-section { margin-bottom: 12px; }
     .report-section-title {
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 800;
       text-transform: uppercase;
       margin-bottom: 4px;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
     }
 
     .title-prob { color: #b91c1c; }
@@ -412,39 +410,39 @@
       border: 1px solid #e2e8f0;
       border-radius: 5px;
       padding: 8px 10px;
-      font-size: 12px;
+      font-size: 11px;
       color: #334155;
       white-space: pre-wrap;
     }
 
     .gallery-preview {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-      gap: 8px;
+      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+      gap: 6px;
       margin-top: 6px;
     }
 
     .gallery-preview img {
       width: 100%;
-      height: 100px;
+      height: 90px;
       object-fit: cover;
       border-radius: 4px;
       border: 1px solid #cbd5e1;
     }
 
     .signatures-block {
-      margin-top: 32px;
+      margin-top: 25px;
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 30px;
+      gap: 25px;
       page-break-inside: avoid;
     }
 
     .sig-line {
       border-top: 1px dashed #94a3b8;
-      padding-top: 6px;
+      padding-top: 5px;
       text-align: center;
-      font-size: 11px;
+      font-size: 10px;
       color: #64748b;
       font-weight: 600;
     }
@@ -460,7 +458,6 @@
 </head>
 <body>
 
-<!-- BARRA SUPERIOR -->
 <header class="topbar no-print">
   <div class="brand">
     <img src="logo.png" alt="Ajuntament de Marratxí" class="brand-logo" onerror="this.style.display='none'">
@@ -470,15 +467,14 @@
     </div>
   </div>
   <div class="actions">
-    <!-- SELECTOR BILINGÜE -->
     <div class="lang-selector">
       <button class="lang-btn active" id="btnCA" onclick="canviarIdioma('ca')">CA</button>
       <button class="lang-btn" id="btnES" onclick="canviarIdioma('es')">ES</button>
     </div>
     <a href="tasques.html" class="btn btn-tasks">📋 <span data-i18n="btnTasks">Extractor de Tasques</span></a>
     
-    <!-- BOTÓN COMPARTIR NATIVO (DRIVE / WHATSAPP / IPHONE AIRPRINT) -->
-    <button class="btn btn-drive" onclick="compartirInformeDirecte()">📤 <span data-i18n="btnShare">Compartir (Drive / WA)</span></button>
+    <!-- BOTÓ GENERADOR DE FITXER PDF REAL -->
+    <button class="btn btn-drive" id="btnPdfDrive" onclick="generarICompartirPDF()">☁️ <span data-i18n="btnPdf">Guardar en Drive (PDF)</span></button>
     <button class="btn btn-mail" onclick="enviarInformeCorreu()">✉️ <span data-i18n="btnMail">Correu</span></button>
     <button class="btn btn-secondary" onclick="limpiarFormulario()">🔄 <span data-i18n="btnClean">Netejar</span></button>
     <button class="btn btn-secondary" onclick="cargarEjemplo()">💡 <span data-i18n="btnExample">Exemple</span></button>
@@ -487,7 +483,7 @@
 </header>
 
 <div class="container">
-  <!-- FORMULARIO -->
+  <!-- FORMULARI -->
   <div class="card no-print">
     <div class="card-header">
       <div class="card-title">📝 <span data-i18n="formTitle">Formulari de l'Informe</span></div>
@@ -560,7 +556,6 @@
       <input type="text" id="ubicacion" placeholder="Edifici, aula, sala o coordenades" oninput="actualitzarVista()">
     </div>
 
-    <!-- FOTOGRAFIES PROBLEMA -->
     <div class="form-group">
       <label for="problema"><span data-i18n="labelProblem">Descripció del Problema / Falla</span> <span class="req">*</span></label>
       <textarea id="problema" rows="3" placeholder="Detall de l'anomalia, símptomes o causes..." oninput="actualitzarVista()"></textarea>
@@ -576,7 +571,6 @@
       <div class="thumbs-grid" id="thumbsProb"></div>
     </div>
 
-    <!-- FOTOGRAFIES SOLUCIÓ -->
     <div class="form-group">
       <label for="solucion" data-i18n="labelSolution">Acció Realitzada / Solució Aplicada</label>
       <textarea id="solucion" rows="3" placeholder="Tasques d'inspecció, canvi de peces o proves..." oninput="actualitzarVista()"></textarea>
@@ -598,9 +592,9 @@
     </div>
   </div>
 
-  <!-- HOJA IMPRIMIBLE -->
-  <div class="card" id="printableCard">
-    <div class="sheet-preview">
+  <!-- FULL IMPRIMIBLE (DOCUMENT A4 CAPTURAT EN PDF) -->
+  <div class="card">
+    <div class="sheet-preview" id="printableArea">
       <div class="sheet-head" id="sheetHeader">
         <div style="display:flex; align-items:center; gap:12px;">
           <img src="logo.png" alt="Ajuntament de Marratxí" class="sheet-logo-img" id="sheetLogo" onerror="this.style.display='none'">
@@ -620,9 +614,9 @@
         <strong id="v_destinatari">Economia i Educació</strong>
       </div>
 
-      <div style="margin-bottom:14px;">
-        <span style="font-size:11px; text-transform:uppercase; font-weight:bold; color:#64748b;" data-i18n="docSubjectLabel">Assumpte de l'Informe</span>
-        <h3 id="v_titulo" style="font-size:17px; color:#0f172a; font-weight:800;">Títol de l'Informe Tècnic</h3>
+      <div style="margin-bottom:12px;">
+        <span style="font-size:10px; text-transform:uppercase; font-weight:bold; color:#64748b;" data-i18n="docSubjectLabel">Assumpte de l'Informe</span>
+        <h3 id="v_titulo" style="font-size:16px; color:#0f172a; font-weight:800;">Títol de l'Informe Tècnic</h3>
       </div>
 
       <div class="meta-box">
@@ -640,36 +634,32 @@
         </div>
       </div>
 
-      <!-- SECCIÓ 1 -->
       <div class="report-section">
         <div class="report-section-title title-prob">⚠️ <span data-i18n="docSecProb">1. DIAGNÒSTIC I PROBLEMA REPORTAT</span></div>
         <div class="report-text" id="v_problema">Sense descripció del problema indicada.</div>
-        <div style="margin-top:6px; font-size:11px; font-weight:bold; color:#b91c1c;" data-i18n="docEvProb">📸 Evidència del Problema (Abans)</div>
+        <div style="margin-top:6px; font-size:10px; font-weight:bold; color:#b91c1c;" data-i18n="docEvProb">📸 Evidència del Problema (Abans)</div>
         <div class="gallery-preview" id="v_galeriaProb"></div>
       </div>
 
-      <!-- SECCIÓ 2 -->
       <div class="report-section">
         <div class="report-section-title title-sol">✅ <span data-i18n="docSecSol">2. ACCIÓ REALITZADA / SOLUCIÓ APLICADA</span></div>
         <div class="report-text" id="v_solucion">Sense actuació documentada.</div>
-        <div style="margin-top:6px; font-size:11px; font-weight:bold; color:#15803d;" data-i18n="docEvSol">📸 Evidència de la Solució (Després)</div>
+        <div style="margin-top:6px; font-size:10px; font-weight:bold; color:#15803d;" data-i18n="docEvSol">📸 Evidència de la Solució (Després)</div>
         <div class="gallery-preview" id="v_galeriaSol"></div>
       </div>
 
-      <!-- SECCIÓ 3 -->
       <div class="report-section">
         <div class="report-section-title title-obs">📝 <span data-i18n="docSecObs">3. OBSERVACIONS I RECOMANACIONS</span></div>
         <div class="report-text" id="v_observaciones">Cap observació addicional registrada.</div>
       </div>
 
-      <!-- SIGNATURES -->
       <div class="signatures-block">
         <div class="sig-line">
-          <div style="height:35px;"></div>
+          <div style="height:30px;"></div>
           <span data-i18n="sigTech">Signatura de l'Operari / Tècnic</span>
         </div>
         <div class="sig-line">
-          <div style="height:35px;"></div>
+          <div style="height:30px;"></div>
           <span data-i18n="sigResp">Conforme / Responsable de l'Àrea</span>
         </div>
       </div>
@@ -685,7 +675,7 @@
   const traduccions = {
     ca: {
       btnTasks: "Extractor de Tasques",
-      btnShare: "Compartir (Drive / WA)",
+      btnPdf: "Guardar en Drive (PDF)",
       btnMail: "Correu",
       btnClean: "Netejar",
       btnExample: "Exemple",
@@ -724,7 +714,7 @@
     },
     es: {
       btnTasks: "Extractor de Tareas",
-      btnShare: "Compartir (Drive / WA)",
+      btnPdf: "Guardar en Drive (PDF)",
       btnMail: "Correo",
       btnClean: "Limpiar",
       btnExample: "Ejemplo",
@@ -852,13 +842,13 @@
         const img = new Image();
         img.onload = () => {
           const canvas = document.createElement('canvas');
-          const maxDim = 1000;
+          const maxDim = 800;
           let w = img.width, h = img.height;
           if (w > h && w > maxDim) { h = Math.round((h * maxDim) / w); w = maxDim; }
           else if (h > maxDim) { w = Math.round((w * maxDim) / h); h = maxDim; }
           canvas.width = w; canvas.height = h;
           canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-          const b64 = canvas.toDataURL('image/jpeg', 0.75);
+          const b64 = canvas.toDataURL('image/jpeg', 0.70);
 
           if (tipus === 'problema') fotosProb.push(b64);
           else fotosSol.push(b64);
@@ -917,95 +907,67 @@
     );
   }
 
-  /* IMPRESSIÓ ROBUSTA COMPATIBLE AMB SAFARI I DISPOSITIUS MÒBILS */
   function executarImpressio() {
-    try {
-      window.print();
-    } catch (e) {
-      alert(idiomaActual === 'ca' 
-        ? "Fes servir el menú Compartir de Safari i selecciona 'Imprimir' o 'Guardar a Fitxers (PDF)'."
-        : "Usa el menú Compartir de Safari y selecciona 'Imprimir' o 'Guardar en Archivos (PDF)'.");
-    }
+    window.print();
   }
 
-  /* COMPARTIR DIRECTAMENT A IPHONE / PC (DRIVE, WHATSAPP, EMAIL AMB DOCUMENT) */
-  async function compartirInformeDirecte() {
-    const titol = document.getElementById('titulo').value || 'Informe_Tecnic';
+  /* GENERAR FITXER PDF REAL I COMPARTIR (GOOGLE DRIVE / WHATSAPP / DESCARREGA) */
+  async function generarICompartirPDF() {
+    const btn = document.getElementById('btnPdfDrive');
+    const textOriginal = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = "⏳ Generant PDF...";
+
     const ref = document.getElementById('referencia').value || 'INF-000';
-    const dest = document.getElementById('destinatariSelect').value;
-    const tec = document.getElementById('tecnico').value || 'Sense assignar';
-    const estat = document.getElementById('estado').value;
-    const dataHora = document.getElementById('fecha').value.replace('T', ' ') || '-';
-    const ubi = document.getElementById('ubicacion').value || 'No especificada';
-    const prob = document.getElementById('problema').value || '-';
-    const sol = document.getElementById('solucion').value || '-';
-    const obs = document.getElementById('observaciones').value || '-';
+    const nomArxiu = `Informe_${ref}.pdf`;
+    const element = document.getElementById('printableArea');
 
-    const textResum = 
-`📋 *INFORME DE MANTENIMENT I CLIMATITZACIÓ*
-*Ajuntament de Marratxí*
---------------------------------------------------
-*Ref:* ${ref}
-*Data:* ${dataHora}
-*Destinatari:* ${dest}
-*Operari:* ${tec}
-*Estat:* ${estat}
-*Ubicació:* ${ubi}
+    const opcions = {
+      margin:       [8, 8, 8, 8],
+      filename:     nomArxiu,
+      image:        { type: 'jpeg', quality: 0.85 },
+      html2canvas:  { scale: 2, useCORS: true, letterRendering: true },
+      jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
 
-*1. Diagnòstic i Problema:*
-${prob}
+    try {
+      // 1. Generar blob del PDF binari
+      const pdfBlob = await html2pdf().set(opcions).from(element).output('blob');
+      const fitxerPdf = new File([pdfBlob], nomArxiu, { type: 'application/pdf' });
 
-*2. Actuació / Solució:*
-${sol}
-
-*3. Observacions:*
-${obs}`;
-
-    const nomFitxer = `Informe_${ref}.txt`;
-    const blob = new Blob([textResum], { type: 'text/plain;charset=utf-8' });
-    const file = new File([blob], nomFitxer, { type: 'text/plain' });
-
-    // 1. Provar menú compartir Natiu d'Apple / Android (permet enviar a WhatsApp i Drive directament)
-    if (navigator.share) {
-      try {
-        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      // 2. Si està a iPhone/mòbil, obrir el menú natiu de compartir (Drive, WhatsApp, etc.)
+      if (navigator.canShare && navigator.canShare({ files: [fitxerPdf] })) {
+        try {
           await navigator.share({
-            title: `${ref} - ${titol}`,
-            text: textResum,
-            files: [file]
+            files: [fitxerPdf],
+            title: nomArxiu,
+            text: `Informe Tècnic de Manteniment - Marratxí (${ref})`
           });
+          btn.disabled = false;
+          btn.innerHTML = textOriginal;
           return;
-        } else {
-          await navigator.share({
-            title: `${ref} - ${titol}`,
-            text: textResum
-          });
-          return;
+        } catch (e) {
+          if (e.name !== 'AbortError') console.error(e);
         }
-      } catch (err) {
-        if (err.name !== 'AbortError') console.log("Compartir cancel·lat o no disponible.");
       }
-    }
 
-    // 2. Si està a PC o no suporta Web Share, descarrega el fitxer i dóna opció a WhatsApp Web o Drive
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = nomFitxer;
-    a.click();
-    URL.revokeObjectURL(a.href);
+      // 3. Si està a PC o es cancel·la el menú: descarrega el PDF directe
+      const url = URL.createObjectURL(pdfBlob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = nomArxiu;
+      a.click();
+      URL.revokeObjectURL(url);
 
-    const obrir = confirm(
-      idiomaActual === 'ca'
-        ? "Informe descarregat. Vols obrir WhatsApp Web o Google Drive per adjuntar-lo?"
-        : "Informe descargado. ¿Deseas abrir WhatsApp Web o Google Drive para adjuntarlo?"
-    );
-
-    if (obrir) {
-      window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(textResum)}`, '_blank');
+    } catch (err) {
+      console.error(err);
+      alert(idiomaActual === 'ca' ? "Error en generar el PDF: " + err.message : "Error al generar el PDF: " + err.message);
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = textOriginal;
     }
   }
 
-  /* ENVIAMENT PER CORREU */
   function enviarInformeCorreu() {
     const titol = document.getElementById('titulo').value || 'Informe de Manteniment';
     const ref = document.getElementById('referencia').value || 'INF-000';
@@ -1019,7 +981,6 @@ ${obs}`;
     const obs = document.getElementById('observaciones').value || '-';
 
     const assumpte = `[Manteniment i Climatització Marratxí] ${ref} - ${titol}`;
-
     const cos = 
 `INFORME TÈCNIC DE MANTENIMENT I CLIMATITZACIÓ
 AJUNTAMENT DE MARRATXÍ
@@ -1040,7 +1001,7 @@ ${sol}
 3. OBSERVACIONS I MATERIALS:
 ${obs}
 --------------------------------------------------
-* Resum oficial generat des de l'App de Manteniment Marratxí.`;
+* Resum generat per Manteniment Ajuntament de Marratxí.`;
 
     window.location.href = `mailto:?subject=${encodeURIComponent(assumpte)}&body=${encodeURIComponent(cos)}`;
   }
