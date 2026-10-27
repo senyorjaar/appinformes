@@ -19,6 +19,10 @@
       --warning: #d97706;
       --mail: #0284c7;
       --mail-hover: #0369a1;
+      --drive: #0f9d58;
+      --drive-hover: #0b8043;
+      --wa: #25d366;
+      --wa-hover: #1ebd5a;
     }
 
     * {
@@ -35,7 +39,7 @@
       padding-bottom: 40px;
     }
 
-    /* CAPÇALERA SUPERIOR */
+    /* CAPÇALERA */
     .topbar {
       background: #ffffff;
       border-bottom: 2px solid var(--primary);
@@ -79,7 +83,7 @@
 
     .actions {
       display: flex;
-      gap: 8px;
+      gap: 6px;
       align-items: center;
       flex-wrap: wrap;
     }
@@ -113,10 +117,10 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
-      padding: 8px 14px;
+      gap: 5px;
+      padding: 8px 12px;
       border-radius: 6px;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 600;
       cursor: pointer;
       border: 1px solid transparent;
@@ -127,6 +131,8 @@
 
     .btn-primary { background: var(--primary); color: white; }
     .btn-primary:hover { background: var(--primary-dark); }
+    .btn-drive { background: var(--drive); color: white; }
+    .btn-drive:hover { background: var(--drive-hover); }
     .btn-mail { background: var(--mail); color: white; }
     .btn-mail:hover { background: var(--mail-hover); }
     .btn-secondary { background: #ffffff; color: #334155; border-color: #cbd5e1; }
@@ -232,7 +238,7 @@
       cursor: pointer;
     }
 
-    /* ZONES DE CÀRREGA DE FOTOS */
+    /* ZONES FOTOS */
     .photo-dropzone {
       border: 2px dashed #cbd5e1;
       border-radius: 8px;
@@ -276,7 +282,7 @@
       cursor: pointer;
     }
 
-    /* FULL IMPRIMIBLE (DOCUMENT A4) */
+    /* HOJA IMPRIMIBLE */
     .sheet-preview {
       background: #ffffff;
       border: 1px solid #cbd5e1;
@@ -315,9 +321,7 @@
       font-weight: bold;
     }
 
-    .sheet-head-right {
-      text-align: right;
-    }
+    .sheet-head-right { text-align: right; }
 
     .badge-status {
       display: inline-block;
@@ -386,14 +390,9 @@
       color: #64748b;
     }
 
-    .meta-item strong {
-      color: #1e293b;
-    }
+    .meta-item strong { color: #1e293b; }
 
-    .report-section {
-      margin-bottom: 14px;
-    }
-
+    .report-section { margin-bottom: 14px; }
     .report-section-title {
       font-size: 12px;
       font-weight: 800;
@@ -450,7 +449,6 @@
       font-weight: 600;
     }
 
-    /* ESTILS D'IMPRESSIÓ PERMANENTS */
     @media print {
       body { background: #ffffff; padding: 0; }
       .no-print, .topbar, .card:first-child { display: none !important; }
@@ -478,23 +476,24 @@
       <button class="lang-btn" id="btnES" onclick="canviarIdioma('es')">ES</button>
     </div>
     <a href="tasques.html" class="btn btn-tasks">📋 <span data-i18n="btnTasks">Extractor de Tasques</span></a>
-    <!-- BOTÓ ENVIAR PER CORREU -->
-    <button class="btn btn-mail" onclick="enviarInformeCorreu()">✉️ <span data-i18n="btnMail">Enviar per Correu</span></button>
+    
+    <!-- BOTÓN COMPARTIR NATIVO (DRIVE / WHATSAPP / IPHONE AIRPRINT) -->
+    <button class="btn btn-drive" onclick="compartirInformeDirecte()">📤 <span data-i18n="btnShare">Compartir (Drive / WA)</span></button>
+    <button class="btn btn-mail" onclick="enviarInformeCorreu()">✉️ <span data-i18n="btnMail">Correu</span></button>
     <button class="btn btn-secondary" onclick="limpiarFormulario()">🔄 <span data-i18n="btnClean">Netejar</span></button>
     <button class="btn btn-secondary" onclick="cargarEjemplo()">💡 <span data-i18n="btnExample">Exemple</span></button>
-    <button class="btn btn-primary" onclick="window.print()">🖨️ <span data-i18n="btnPrint">Imprimir / Guardar PDF</span></button>
+    <button class="btn btn-primary" onclick="executarImpressio()">🖨️ <span data-i18n="btnPrint">Imprimir</span></button>
   </div>
 </header>
 
 <div class="container">
-  <!-- FORMULARI D'INTRODUCCIÓ -->
+  <!-- FORMULARIO -->
   <div class="card no-print">
     <div class="card-header">
       <div class="card-title">📝 <span data-i18n="formTitle">Formulari de l'Informe</span></div>
       <span style="font-size:11px; color:#80146e; font-weight:bold;">Marratxí</span>
     </div>
 
-    <!-- OPCIÓ DE RETOLACIÓ OFICIAL -->
     <div class="toggle-row">
       <input type="checkbox" id="checkRotulacio" checked onchange="actualitzarVista()">
       <label for="checkRotulacio" style="margin-bottom:0; cursor:pointer;" data-i18n="labelRotulacio">
@@ -502,7 +501,6 @@
       </label>
     </div>
 
-    <!-- DESPLEGABLE D'ÀREES DESTINATÀRIES -->
     <div class="form-group">
       <label for="destinatariSelect"><span data-i18n="labelDest">Àrea Destinatària de l'Informe</span> <span class="req">*</span></label>
       <select id="destinatariSelect" onchange="actualitzarVista()">
@@ -600,10 +598,9 @@
     </div>
   </div>
 
-  <!-- FULL IMPRIMIBLE (VISTA PRÈVIA) -->
-  <div class="card">
+  <!-- HOJA IMPRIMIBLE -->
+  <div class="card" id="printableCard">
     <div class="sheet-preview">
-      <!-- CAPÇALERA RETOLADA AMB LOGO -->
       <div class="sheet-head" id="sheetHeader">
         <div style="display:flex; align-items:center; gap:12px;">
           <img src="logo.png" alt="Ajuntament de Marratxí" class="sheet-logo-img" id="sheetLogo" onerror="this.style.display='none'">
@@ -618,7 +615,6 @@
         </div>
       </div>
 
-      <!-- DESTINATARI DESTACAT -->
       <div class="sheet-destinatari-box">
         <span data-i18n="docDestLabel">Àrea Destinatària:</span>
         <strong id="v_destinatari">Economia i Educació</strong>
@@ -644,7 +640,7 @@
         </div>
       </div>
 
-      <!-- SECCIÓ 1: PROBLEMA -->
+      <!-- SECCIÓ 1 -->
       <div class="report-section">
         <div class="report-section-title title-prob">⚠️ <span data-i18n="docSecProb">1. DIAGNÒSTIC I PROBLEMA REPORTAT</span></div>
         <div class="report-text" id="v_problema">Sense descripció del problema indicada.</div>
@@ -652,7 +648,7 @@
         <div class="gallery-preview" id="v_galeriaProb"></div>
       </div>
 
-      <!-- SECCIÓ 2: SOLUCIÓ -->
+      <!-- SECCIÓ 2 -->
       <div class="report-section">
         <div class="report-section-title title-sol">✅ <span data-i18n="docSecSol">2. ACCIÓ REALITZADA / SOLUCIÓ APLICADA</span></div>
         <div class="report-text" id="v_solucion">Sense actuació documentada.</div>
@@ -660,7 +656,7 @@
         <div class="gallery-preview" id="v_galeriaSol"></div>
       </div>
 
-      <!-- SECCIÓ 3: OBSERVACIONS -->
+      <!-- SECCIÓ 3 -->
       <div class="report-section">
         <div class="report-section-title title-obs">📝 <span data-i18n="docSecObs">3. OBSERVACIONS I RECOMANACIONS</span></div>
         <div class="report-text" id="v_observaciones">Cap observació addicional registrada.</div>
@@ -689,10 +685,11 @@
   const traduccions = {
     ca: {
       btnTasks: "Extractor de Tasques",
-      btnMail: "Enviar per Correu",
+      btnShare: "Compartir (Drive / WA)",
+      btnMail: "Correu",
       btnClean: "Netejar",
       btnExample: "Exemple",
-      btnPrint: "Imprimir / Guardar PDF",
+      btnPrint: "Imprimir",
       formTitle: "Formulari de l'Informe",
       labelRotulacio: "Incloure retolació i logotip oficial d'Ajuntament de Marratxí",
       labelDest: "Àrea Destinatària de l'Informe",
@@ -727,10 +724,11 @@
     },
     es: {
       btnTasks: "Extractor de Tareas",
-      btnMail: "Enviar por Correo",
+      btnShare: "Compartir (Drive / WA)",
+      btnMail: "Correo",
       btnClean: "Limpiar",
       btnExample: "Ejemplo",
-      btnPrint: "Imprimir / Guardar PDF",
+      btnPrint: "Imprimir",
       formTitle: "Formulario del Informe",
       labelRotulacio: "Incluir rotulación y logotipo oficial del Ajuntament de Marratxí",
       labelDest: "Área Destinataria del Informe",
@@ -919,56 +917,132 @@
     );
   }
 
-  /* FUNCIÓ D'ENVIAMENT PER CORREU ELECTRÒNIC */
-  function enviarInformeCorreu() {
-    const titol = document.getElementById('titulo').value || ((idiomaActual === 'ca') ? 'Informe de Manteniment' : 'Informe de Mantenimiento');
+  /* IMPRESSIÓ ROBUSTA COMPATIBLE AMB SAFARI I DISPOSITIUS MÒBILS */
+  function executarImpressio() {
+    try {
+      window.print();
+    } catch (e) {
+      alert(idiomaActual === 'ca' 
+        ? "Fes servir el menú Compartir de Safari i selecciona 'Imprimir' o 'Guardar a Fitxers (PDF)'."
+        : "Usa el menú Compartir de Safari y selecciona 'Imprimir' o 'Guardar en Archivos (PDF)'.");
+    }
+  }
+
+  /* COMPARTIR DIRECTAMENT A IPHONE / PC (DRIVE, WHATSAPP, EMAIL AMB DOCUMENT) */
+  async function compartirInformeDirecte() {
+    const titol = document.getElementById('titulo').value || 'Informe_Tecnic';
     const ref = document.getElementById('referencia').value || 'INF-000';
     const dest = document.getElementById('destinatariSelect').value;
-    const tec = document.getElementById('tecnico').value || ((idiomaActual === 'ca') ? 'Sense assignar' : 'Sin asignar');
+    const tec = document.getElementById('tecnico').value || 'Sense assignar';
     const estat = document.getElementById('estado').value;
     const dataHora = document.getElementById('fecha').value.replace('T', ' ') || '-';
-    const ubi = document.getElementById('ubicacion').value || ((idiomaActual === 'ca') ? 'No especificada' : 'No especificada');
+    const ubi = document.getElementById('ubicacion').value || 'No especificada';
+    const prob = document.getElementById('problema').value || '-';
+    const sol = document.getElementById('solucion').value || '-';
+    const obs = document.getElementById('observaciones').value || '-';
+
+    const textResum = 
+`📋 *INFORME DE MANTENIMENT I CLIMATITZACIÓ*
+*Ajuntament de Marratxí*
+--------------------------------------------------
+*Ref:* ${ref}
+*Data:* ${dataHora}
+*Destinatari:* ${dest}
+*Operari:* ${tec}
+*Estat:* ${estat}
+*Ubicació:* ${ubi}
+
+*1. Diagnòstic i Problema:*
+${prob}
+
+*2. Actuació / Solució:*
+${sol}
+
+*3. Observacions:*
+${obs}`;
+
+    const nomFitxer = `Informe_${ref}.txt`;
+    const blob = new Blob([textResum], { type: 'text/plain;charset=utf-8' });
+    const file = new File([blob], nomFitxer, { type: 'text/plain' });
+
+    // 1. Provar menú compartir Natiu d'Apple / Android (permet enviar a WhatsApp i Drive directament)
+    if (navigator.share) {
+      try {
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          await navigator.share({
+            title: `${ref} - ${titol}`,
+            text: textResum,
+            files: [file]
+          });
+          return;
+        } else {
+          await navigator.share({
+            title: `${ref} - ${titol}`,
+            text: textResum
+          });
+          return;
+        }
+      } catch (err) {
+        if (err.name !== 'AbortError') console.log("Compartir cancel·lat o no disponible.");
+      }
+    }
+
+    // 2. Si està a PC o no suporta Web Share, descarrega el fitxer i dóna opció a WhatsApp Web o Drive
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = nomFitxer;
+    a.click();
+    URL.revokeObjectURL(a.href);
+
+    const obrir = confirm(
+      idiomaActual === 'ca'
+        ? "Informe descarregat. Vols obrir WhatsApp Web o Google Drive per adjuntar-lo?"
+        : "Informe descargado. ¿Deseas abrir WhatsApp Web o Google Drive para adjuntarlo?"
+    );
+
+    if (obrir) {
+      window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(textResum)}`, '_blank');
+    }
+  }
+
+  /* ENVIAMENT PER CORREU */
+  function enviarInformeCorreu() {
+    const titol = document.getElementById('titulo').value || 'Informe de Manteniment';
+    const ref = document.getElementById('referencia').value || 'INF-000';
+    const dest = document.getElementById('destinatariSelect').value;
+    const tec = document.getElementById('tecnico').value || 'Sense assignar';
+    const estat = document.getElementById('estado').value;
+    const dataHora = document.getElementById('fecha').value.replace('T', ' ') || '-';
+    const ubi = document.getElementById('ubicacion').value || 'No especificada';
     const prob = document.getElementById('problema').value || '-';
     const sol = document.getElementById('solucion').value || '-';
     const obs = document.getElementById('observaciones').value || '-';
 
     const assumpte = `[Manteniment i Climatització Marratxí] ${ref} - ${titol}`;
 
-    let cos = "";
-    if (idiomaActual === 'ca') {
-      cos = `INFORME TÈCNIC DE MANTENIMENT I CLIMATITZACIÓ\n` +
-            `AJUNTAMENT DE MARRATXÍ\n` +
-            `--------------------------------------------------\n` +
-            `Referència: ${ref}\n` +
-            `Data i Hora: ${dataHora}\n` +
-            `Àrea Destinatària: ${dest}\n` +
-            `Tècnic / Operari: ${tec}\n` +
-            `Estat Actual: ${estat}\n` +
-            `Ubicació / Centre: ${ubi}\n\n` +
-            `1. DIAGNÒSTIC I PROBLEMA REPORTAT:\n${prob}\n\n` +
-            `2. ACCIÓ REALITZADA / SOLUCIÓ:\n${sol}\n\n` +
-            `3. OBSERVACIONS I MATERIALS:\n${obs}\n\n` +
-            `--------------------------------------------------\n` +
-            `* Nota: Aquest resum s'ha generat des de l'aplicació d'Informes Tècnics de Marratxí. Podeu adjuntar el PDF oficial si ha estat descarregat.`;
-    } else {
-      cos = `INFORME TÉCNICO DE MANTENIMIENTO Y CLIMATIZACIÓN\n` +
-            `AJUNTAMENT DE MARRATXÍ\n` +
-            `--------------------------------------------------\n` +
-            `Referencia: ${ref}\n` +
-            `Fecha y Hora: ${dataHora}\n` +
-            `Área Destinataria: ${dest}\n` +
-            `Técnico / Operario: ${tec}\n` +
-            `Estado Actual: ${estat}\n` +
-            `Ubicación / Centro: ${ubi}\n\n` +
-            `1. DIAGNÓSTICO Y PROBLEMA REPORTADO:\n${prob}\n\n` +
-            `2. ACCIÓN REALIZADA / SOLUCIÓN:\n${sol}\n\n` +
-            `3. OBSERVACIONES Y MATERIALES:\n${obs}\n\n` +
-            `--------------------------------------------------\n` +
-            `* Nota: Este resumen ha sido generado desde la aplicación de Informes Técnicos de Marratxí. Puede adjuntar el PDF oficial si ha sido descargado.`;
-    }
+    const cos = 
+`INFORME TÈCNIC DE MANTENIMENT I CLIMATITZACIÓ
+AJUNTAMENT DE MARRATXÍ
+--------------------------------------------------
+Referència: ${ref}
+Data i Hora: ${dataHora}
+Àrea Destinatària: ${dest}
+Tècnic / Operari: ${tec}
+Estat Actual: ${estat}
+Ubicació / Centre: ${ubi}
 
-    const mailtoUrl = `mailto:?subject=${encodeURIComponent(assumpte)}&body=${encodeURIComponent(cos)}`;
-    window.location.href = mailtoUrl;
+1. DIAGNÒSTIC I PROBLEMA REPORTAT:
+${prob}
+
+2. ACCIÓ REALITZADA / SOLUCIÓ:
+${sol}
+
+3. OBSERVACIONS I MATERIALS:
+${obs}
+--------------------------------------------------
+* Resum oficial generat des de l'App de Manteniment Marratxí.`;
+
+    window.location.href = `mailto:?subject=${encodeURIComponent(assumpte)}&body=${encodeURIComponent(cos)}`;
   }
 
   function cargarEjemplo() {
